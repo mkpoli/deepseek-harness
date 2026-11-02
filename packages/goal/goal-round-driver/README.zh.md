@@ -29,7 +29,7 @@ kind: "package-reference"
 
 ### 组合方式
 
-把驱动器挂载在 goal 服务与 goal 工具旁边；驱动器本身不需要任何配置。
+把驱动器挂载在 goal 服务与 goal 工具旁边。`interruptedRoundRetries` 默认为 3，决定本包重试“被提供方故障打断的 Round”的次数。
 
 ```yaml
 - id: goal
@@ -40,9 +40,11 @@ kind: "package-reference"
 
 - id: goal-round-driver
   name: '@deepseek-ai/dsh-goal-round-driver'
+  config:
+    interruptedRoundRetries: 3
 ```
 
-`maxGoalRounds` 属于 goal 定义，面向模型的阻塞阈值属于 `dsh-tool-goal`；在驱动器中重复任一数值都可能产生分歧策略。
+`maxGoalRounds` 属于 goal 定义，面向模型的阻塞阈值属于 `dsh-tool-goal`；在驱动器中重复任一数值都可能产生分歧策略。`interruptedRoundRetries` 只统计应答“被提供方故障打断的 Round”的重试，因此它是一项调度选择，而非该策略的第二份副本。
 
 ### 每轮做什么
 
@@ -50,7 +52,7 @@ kind: "package-reference"
 
 ### 何时停止续行
 
-Round 只在整个 agent 进入 idle 时启动；加载了子 agent 服务时，还要等该 agent 仍在推进的后代全部结束后才启动；完成、暂停和阻塞会阻止续行；宿主发起的暂停还会中止正在运行的轮次，而模型在自己轮次内发起的暂停会正常结束。编辑只会通过修订栅栏使进行中的 Round 失效，驱动器会继续新修订。驱动器也会在以下情况自行停止：轮次因 max tokens 结束、持久性写入失败、agent 被取消、插件卸载，或 Round 上限耗尽——上限耗尽时它会以稳定代码 `round-limit` 记录一个 blocker。取消绝不会自动重启 Round：Round 已在进行的 goal 会在下一次 idle 时被暂停；与 goal 尝试无关的取消只会停用续行。agent 进入 idle 时仍在排队的 Round 提示会从收件箱移除，后续人类输入不会排在它后面等待；被取消的轮次属于其他工作时，续行会被停用而不是暂停。
+Round 只在整个 agent 进入 idle 时启动；加载了子 agent 服务时，还要等该 agent 仍在推进的后代全部结束后才启动；完成、暂停和阻塞会阻止续行；宿主发起的暂停还会中止正在运行的轮次，而模型在自己轮次内发起的暂停会正常结束。编辑只会通过修订栅栏使进行中的 Round 失效，驱动器会继续新修订。驱动器也会在以下情况自行停止：轮次因 max tokens 结束、持久性写入失败、agent 被取消、插件卸载，或 Round 上限耗尽——上限耗尽时它会以稳定代码 `round-limit` 记录一个 blocker。轮次因打断型提供方故障结束时——API key 或凭据被拒、连接或传输失败、提供方配额——续行保持启用，并在 `interruptedRoundRetries` 范围内重试，因为该故障结束的是 Round，而不是 goal。轮次以其他方式结束，或用户创建、resume、编辑 goal，都会重置这份重试额度；重试窗口在另一个轮次先启动时关闭。取消绝不会自动重启 Round：Round 已在进行的 goal 会在下一次 idle 时被暂停；与 goal 尝试无关的取消只会停用续行。agent 进入 idle 时仍在排队的 Round 提示会从收件箱移除，后续人类输入不会排在它后面等待；被取消的轮次属于其他工作时，续行会被停用而不是暂停。
 
 ### resume、fork 或卸载之后
 
@@ -126,7 +128,7 @@ Round 只在整个 agent 进入 idle 时启动；加载了子 agent 服务时，
 - **只在同一会话执行**——此包有意不 spawn 新 agent、不 fork 会话前缀，也不实现 Ralph 风格的独立尝试；该工作流属于单独的插件层。
 - **已接受队列的卸载竞态**——Cordis 插件卸载是异步的。已经被 agent inbox 接受的 goal 提示词可以在卸载开始前启动并消耗其 Round；teardown 随后会取消请求、停用 goal 的续行并等待完全停稳。不会再启动后续 Round。
 - **只有 Round 上限，不是资源预算**——token、货币、时间与提供方配额策略保持独立。对应的会话事件不会归属于 goal 消息，也不会映射为 goal 阻塞代码。
-- **异常情况不自动重试**——暂时性的提供方与持久化失败需要之后由用户授权 resume，而不会采用隐式重试策略。
+- **提供方故障有限重试，持久化故障不重试**——打断型提供方故障会保持续行启用，并在 `interruptedRoundRetries` 范围内重试；持久化失败仍需之后由用户授权 resume。
 
 <a id="dev-note"></a>
 ### 开发备注

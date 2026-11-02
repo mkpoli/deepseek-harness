@@ -8,16 +8,56 @@ import { FiberState } from '@deepseek-ai/cordis'
 import type { Context } from '@deepseek-ai/cordis'
 import type { Agent, PreStepDecision } from '@deepseek-ai/dsh-agent'
 import type { GoalMessageSource, GoalRef, GoalView } from '@deepseek-ai/dsh-goal'
-import { createUserMessage } from '@deepseek-ai/dsh-llm'
+import { createUserMessage, LlmError } from '@deepseek-ai/dsh-llm'
 import type { ContentBlock, MessageId, MessageSource } from '@deepseek-ai/dsh-llm'
 import type { Session, SessionEvent, UserMessage } from '@deepseek-ai/dsh-session'
 import type {} from '@deepseek-ai/dsh-subagent'
+import z from '@deepseek-ai/schemastery'
 import { renderGoalRoundPrompt } from './prompt.ts'
 
 export { renderGoalRoundPrompt } from './prompt.ts'
 
 export const name = 'goal-round-driver'
 export const inject = ['agents', 'goals', 'sessions']
+
+/** Scheduling policy for rounds a provider failure interrupted. */
+export interface Config {
+  /**
+   * Retries granted to rounds that ended on an interrupting provider failure
+   * before continuation waits for the next human turn. A provider failure
+   * retires the round, not the goal, so retrying is safe; the bound keeps a
+   * permanently broken route from spending the round allowance in a spin.
+   */
+  interruptedRoundRetries?: number
+}
+
+/** Schemastery config for the retry bound. */
+export const Config: z<Config> = z.object({
+  interruptedRoundRetries: z.number().step(1).min(0).default(3),
+})
+
+/** Fully materialized scheduling policy. */
+interface ResolvedConfig {
+  readonly interruptedRoundRetries: number
+}
+
+/** Validate config even when apply is called directly outside Loader normalization. */
+function resolveConfig(config: Config): ResolvedConfig {
+  const retries = config.interruptedRoundRetries ?? 3
+  if (!Number.isSafeInteger(retries) || retries < 0) {
+    throw new TypeError('interruptedRoundRetries must be a non-negative safe integer')
+  }
+  return { interruptedRoundRetries: retries }
+}
+
+/**
+ * Whether an error is an interrupting provider or request failure rather than a
+ * harness or durability fault. The agent loop re-throws every adapter failure as
+ * its own `LlmError`, so identity is exact here.
+ */
+function isInterruptingError(error: unknown): boolean {
+  return error instanceof LlmError
+}
 
 /** Identity reserved before a goal continuation enters the agent inbox. */
 interface RoundIdentity {
@@ -44,6 +84,12 @@ interface DriverState {
   requested: boolean
   run: Promise<void> | undefined
   stopping: boolean
+  /** The settled turn ended on an interrupting provider failure. */
+  interrupted: boolean
+  /** Set while the next reserved round answers an interrupted one. */
+  retry: boolean
+  /** Consecutive retries granted since the last turn that ended otherwise. */
+  interruptedRetries: number
 }
 
 /** Whether a source identifies an automatic, positive-numbered goal round. */
@@ -74,7 +120,8 @@ function renderThrown(value: unknown): string {
 }
 
 /** Install automatic same-session continuation and its race fences. */
-export function apply(ctx: Context): void {
+export function apply(ctx: Context, config: Config): void {
+  const resolved = resolveConfig(config)
   const states = new Map<Agent, DriverState>()
   // Releases drivers still joining subagents when the plugin unloads.
   const unloading = Promise.withResolvers<void>()
@@ -91,6 +138,9 @@ export function apply(ctx: Context): void {
       requested: false,
       run: undefined,
       stopping: false,
+      interrupted: false,
+      retry: false,
+      interruptedRetries: 0,
     }
     states.set(agent, state)
     return state
@@ -171,6 +221,13 @@ export function apply(ctx: Context): void {
 
     const goal = currentGoal(state)
     if (!drivable(goal)) return
+    // Answering an interrupted round spends the retry budget; once it is gone
+    // the goal stays armed and the next human turn reopens it.
+    if (state.retry) {
+      state.retry = false
+      if (state.interruptedRetries >= resolved.interruptedRoundRetries) return
+      state.interruptedRetries += 1
+    }
     // A round started while descendants progress would only wait for them.
     // Every goal mutation requests a checkpoint, so passing the recheck
     // proves this goal view is still current.
@@ -259,8 +316,14 @@ export function apply(ctx: Context): void {
   // One composite effect keeps the step fence installed until this
   // plugin's own scheduling tasks settle.
   ctx.effect(function* () {
-    ctx.on('agent/error', ({ agent }) => {
+    ctx.on('agent/error', ({ agent, error }) => {
       const state = stateFor(agent)
+      // An interrupting provider failure retires the round's turn, not the
+      // goal: keeping continuation armed lets the next idle retry it.
+      if (isInterruptingError(error)) {
+        state.interrupted = true
+        return
+      }
       disarm(state)
     })
 
@@ -270,11 +333,20 @@ export function apply(ctx: Context): void {
       state.attempt = undefined
       state.competingQueued = false
       state.needsCheckpoint = false
+      state.interrupted = false
+      state.retry = false
+      state.interruptedRetries = 0
     })
     ctx.on('agent/status', ({ agent, status }) => {
       const state = stateFor(agent)
       if (status === 'idle') {
         state.competingQueued = false
+        if (state.interrupted) {
+          state.interrupted = false
+          // Only a settled round spends the retry budget; a failed human turn
+          // in the same session is not the goal's failure.
+          if (state.attempt !== undefined) state.retry = true
+        }
         const attempt = state.attempt
         const goal = currentGoal(state)
         // Fence the pause to the exact dropped attempt's ref. A resume bumps
@@ -302,6 +374,10 @@ export function apply(ctx: Context): void {
     ctx.on('goal/changed', ({ agent, change }) => {
       const state = stateFor(agent)
       state.needsCheckpoint = true
+      // A fresh human authorization of the goal reopens the retry budget.
+      if (change.operation === 'create' || change.operation === 'resume' || change.operation === 'edit') {
+        state.interruptedRetries = 0
+      }
       // A host-initiated pause stops goal execution: abort the live turn so the
       // model cannot keep acting or resume in the same turn. A model-initiated
       // pause (update_goal inside its own turn) finishes normally.
@@ -345,7 +421,14 @@ export function apply(ctx: Context): void {
             state.attempt.phase = 'admitted'
           }
           return
+        case 'turn/start':
+          // A retry answers the interrupted round; any later turn closes that
+          // window, so the budget is not spent on unrelated work.
+          state.retry = false
+          return
         case 'turn/end':
+          // A turn that ended any other way proves the route works again.
+          if (event.data.reason.kind !== 'error') state.interruptedRetries = 0
           if (event.data.reason.kind === 'max-tokens') {
             disarm(state)
             return

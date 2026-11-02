@@ -29,7 +29,7 @@ Mount `dsh-goal-round-driver` when an active goal should keep making progress wi
 
 ### Compose it
 
-Mount the driver beside the goal service and the goal tools; the driver itself takes no configuration.
+Mount the driver beside the goal service and the goal tools. `interruptedRoundRetries` defaults to 3 and decides how often this package retries a round that a provider failure interrupted.
 
 ```yaml
 - id: goal
@@ -40,9 +40,11 @@ Mount the driver beside the goal service and the goal tools; the driver itself t
 
 - id: goal-round-driver
   name: '@deepseek-ai/dsh-goal-round-driver'
+  config:
+    interruptedRoundRetries: 3
 ```
 
-`maxGoalRounds` belongs to the goal definition, while the model-facing blocked threshold belongs to `dsh-tool-goal`; duplicating either value in the driver could produce divergent policy.
+`maxGoalRounds` belongs to the goal definition, while the model-facing blocked threshold belongs to `dsh-tool-goal`; duplicating either value in the driver could produce divergent policy. `interruptedRoundRetries` counts only retries that answer a round a provider failure interrupted, so it stays a scheduling choice rather than a second copy of that policy.
 
 ### What each round does
 
@@ -50,7 +52,7 @@ With an exact live agent idle, an active armed goal, and remaining capacity, the
 
 ### When continuation stops
 
-A round starts only at whole-agent idle and, when the subagent service is loaded, only after the agent's progressing descendants settle; completion, pause, and blocking suppress continuation; a host-initiated pause also aborts the turn already running, while a model-initiated pause inside its own turn finishes normally. An edit only invalidates an in-flight round through the revision fence, and the driver continues the new revision. The driver also stops on its own when a turn ends on max tokens, a durability write fails, the agent is cancelled, the plugin unloads, or the round cap is exhausted — at the cap it records a blocker with the stable code `round-limit`. Cancellation never auto-restarts a round: a goal whose round was under way is paused at the next idle point, and a cancellation unrelated to a goal attempt only disarms continuation. A round prompt still queued when the agent reaches idle is removed from the inbox, so later human input does not wait behind it; when the cancelled turn belonged to other work, continuation is disarmed rather than paused.
+A round starts only at whole-agent idle and, when the subagent service is loaded, only after the agent's progressing descendants settle; completion, pause, and blocking suppress continuation; a host-initiated pause also aborts the turn already running, while a model-initiated pause inside its own turn finishes normally. An edit only invalidates an in-flight round through the revision fence, and the driver continues the new revision. The driver also stops on its own when a turn ends on max tokens, a durability write fails, the agent is cancelled, the plugin unloads, or the round cap is exhausted — at the cap it records a blocker with the stable code `round-limit`. A turn that ends on an interrupting provider failure — a rejected API key or credential, a connection or transport failure, a provider quota — keeps continuation armed and is retried within `interruptedRoundRetries`, because the failure retired the round rather than the goal. The retry budget reopens when a turn ends any other way or a human creates, resumes, or edits the goal, and a retry window closes when another turn starts first. Cancellation never auto-restarts a round: a goal whose round was under way is paused at the next idle point, and a cancellation unrelated to a goal attempt only disarms continuation. A round prompt still queued when the agent reaches idle is removed from the inbox, so later human input does not wait behind it; when the cancelled turn belonged to other work, continuation is disarmed rather than paused.
 
 ### After resume, fork, or unload
 
@@ -126,7 +128,7 @@ These limits define when the driver is a poor fit or needs special care. They ar
 - **Same-session execution only** — this package deliberately does not spawn a fresh agent, fork a session prefix, or implement Ralph-style independent attempts; that workflow belongs to its own plugin layer.
 - **Accepted-queue unload race** — Cordis plugin unload is asynchronous. A goal prompt already accepted by the agent inbox can begin and consume its round before unload starts; teardown then cancels the request, disarms the goal, and awaits quiescence. No later round starts.
 - **Round cap, not resource budget** — token, currency, time, and provider quota policies remain independent. Their session events are not attributed to the goal message or mapped into goal blocker codes.
-- **No abnormal auto-retry** — transient provider and persistence failures require a later human-authorized resume rather than an implicit retry policy.
+- **Bounded provider retry, no persistence retry** — an interrupting provider failure keeps continuation armed and is retried within `interruptedRoundRetries`; a persistence failure still requires a later human-authorized resume.
 
 <a id="dev-note"></a>
 ### Dev Note
