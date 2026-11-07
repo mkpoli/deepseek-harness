@@ -24,7 +24,7 @@ import type { StateDotState } from '@deepseek-ai/dsh-client-ui-primitives'
 import { abbreviateHomePath } from '@deepseek-ai/dsh-util-workspace-path'
 import type { WorkspaceId } from '@deepseek-ai/dsh-api-workspace-controller/client'
 import type { WorkspaceBrowserProps } from '../contract/slots.ts'
-import { FOLDED_GROUPS_KEY } from '../tree.ts'
+
 import type { GroupNode, SearchResultNode, SessionNode } from '../tree.ts'
 import css from './Rows.module.css'
 
@@ -263,6 +263,8 @@ export function ProjectRowItem(props: ProjectRowItemProps) {
 
 /** Props of the row that collects Workspaces whose branches show no Session rows. */
 interface FoldedGroupsRowProps {
+  /** Reserved key of this collection row, unique per parent. */
+  bucketKey: string
   expanded: boolean
   onToggle: () => void
   t: RowTranslate
@@ -272,17 +274,18 @@ interface FoldedGroupsRowProps {
  * Header of the row that collects Workspaces without Session rows: the folder
  * row idiom, an ellipsis title, and a localized name that states what the row
  * holds. Expanding it reveals the collected Workspaces unchanged.
+ * @param props.bucketKey - reserved key of this collection row.
  * @param props.expanded - whether the collected Workspaces render below.
  * @param props.onToggle - expand/collapse the collection.
  * @param props.t - the browser root's locale seat.
  * @returns the row element.
  */
-export function FoldedGroupsRow({ expanded, onToggle, t }: FoldedGroupsRowProps) {
+export function FoldedGroupsRow({ bucketKey, expanded, onToggle, t }: FoldedGroupsRowProps) {
   const label = t('group.folded')
   return (
     <div
       className={css.projectRow}
-      data-row-key={`workspace:${FOLDED_GROUPS_KEY}`}
+      data-row-key={`workspace:${bucketKey}`}
       role="treeitem"
       aria-expanded={expanded}
       aria-label={label}

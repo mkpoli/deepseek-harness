@@ -17,8 +17,26 @@ import { workspaceTitleOf } from '@deepseek-ai/dsh-util-workspace-path'
 /** Group key for Sessions outside every Workspace. */
 export const UNGROUPED_KEY = ''
 
-/** Reserved group key for the single row that collects Workspaces without visible Sessions. */
+/** Reserved group-key prefix of the rows that collect Workspaces without visible Sessions. */
 export const FOLDED_GROUPS_KEY = '__folded_groups__'
+
+/**
+ * Collection row key for one parent's children; the root list uses the bare reserved key.
+ * @param parent - parent Workspace key, or undefined for the root list.
+ * @returns the reserved key that names that parent's collection row.
+ */
+export function foldedGroupsKey(parent: string | undefined): string {
+  return parent === undefined ? FOLDED_GROUPS_KEY : `${FOLDED_GROUPS_KEY}:${parent}`
+}
+
+/**
+ * Whether a group key names a collection row rather than a Workspace.
+ * @param key - group key from expansion state or a row.
+ * @returns true for any collection row key.
+ */
+export function isFoldedGroupsKey(key: string): boolean {
+  return key === FOLDED_GROUPS_KEY || key.startsWith(`${FOLDED_GROUPS_KEY}:`)
+}
 
 /**
  * Resolve the Workspace browser group that owns one Session.

@@ -35,7 +35,7 @@ import type { WorkspaceBrowserProps } from '../contract/slots.ts'
 import type { ArchivedFilter, GroupNode, SessionNode, SessionOrderBy, SessionRowState } from '../tree.ts'
 import {
   deriveFlat, deriveGroups, deriveSearchResults, orderByRecency, owningGroupKey, owningParentFolder,
-  pinCurrentBlank, reconcileManualOrder, sessionMemberIds, topmostChatlessGroups, UNGROUPED_KEY, FOLDED_GROUPS_KEY,
+  pinCurrentBlank, reconcileManualOrder, sessionMemberIds, topmostChatlessGroups, UNGROUPED_KEY, foldedGroupsKey,
 } from '../tree.ts'
 import { FoldedGroupsRow, ProjectRowItem, SearchResultItem, SessionNodeItem } from './Rows.tsx'
 import { FLAT_SESSION_ORDER_KEY, type SessionGroupBy } from '../stores.ts'
@@ -452,12 +452,18 @@ function SessionTree({
       console.warn('workspace reorder rejected:', reason)
     })
   }
+  // Folding waits for the ready list: before it lands every group looks chatless.
+  const collectedGroups = useMemo(
+    () => (list.phase === 'ready' ? topmostChatlessGroups(groups, parents) : []),
+    [groups, list.phase, parents],
+  )
+  const collectedKeys = new Set(collectedGroups.map(group => group.key))
+  // The archived-only view drops empty groups, so an ancestor may be absent;
+  // both maps nest under the nearest rendered one.
   const childrenByParent = useMemo(() => {
     const rendered = new Set(groups.map(group => group.key))
     const children = new Map<string | undefined, GroupNode[]>()
     for (const group of groups) {
-      // The archived-only view drops empty groups, so an ancestor may be
-      // absent; nest under the nearest rendered one.
       let parent = parents.get(group.key)
       while (parent !== undefined && !rendered.has(parent)) parent = parents.get(parent)
       const siblings = children.get(parent)
@@ -466,19 +472,44 @@ function SessionTree({
     }
     return children
   }, [groups, parents])
-  // Folding waits for the ready list: before it lands every group looks chatless.
-  const collectedGroups = useMemo(
-    () => (list.phase === 'ready' ? topmostChatlessGroups(groups, parents) : []),
-    [groups, list.phase, parents],
-  )
-  const collectedKeys = new Set(collectedGroups.map(group => group.key))
-  const collectedExpanded = groupExpansion[FOLDED_GROUPS_KEY] ?? false
+  const collectedByParent = useMemo(() => {
+    const rendered = new Set(groups.map(group => group.key))
+    const collected = new Map<string | undefined, GroupNode[]>()
+    for (const group of collectedGroups) {
+      let parent = parents.get(group.key)
+      while (parent !== undefined && !rendered.has(parent)) parent = parents.get(parent)
+      const siblings = collected.get(parent)
+      if (siblings === undefined) collected.set(parent, [group])
+      else siblings.push(group)
+    }
+    return collected
+  }, [collectedGroups, groups, parents])
   const rootGroups = (childrenByParent.get(undefined) ?? []).filter(group => !collectedKeys.has(group.key))
   const workspaceDropAtListStart = rootGroups[0]?.workspaceId !== undefined
     && workspaceDrag?.over?.id === rootGroups[0].workspaceId
     && workspaceDrag.over.half === 'before'
 
   const rowKeys: string[] = groups.length === 0 ? ['empty'] : []
+  /** One parent's collection row, or null when that parent has no chatless children. */
+  const renderBucket = (parent: string | undefined, depth: number): ReactNode => {
+    const members = collectedByParent.get(parent)
+    if (members === undefined) return null
+    const bucketKey = foldedGroupsKey(parent)
+    const expanded = groupExpansion[bucketKey] ?? false
+    rowKeys.push(`workspace:${bucketKey}`)
+    const rows = expanded ? members.map(member => renderGroup(member, depth + 1)) : []
+    return (
+      <div key={bucketKey} className={css.groupSection} style={{ '--dsh-workspace-indent': `${depth * 12}px` } as CSSProperties}>
+        <FoldedGroupsRow
+          bucketKey={bucketKey}
+          expanded={expanded}
+          onToggle={() => { setGroupExpanded(bucketKey, !expanded) }}
+          t={t}
+        />
+        {rows.length > 0 && <div role="group">{rows}</div>}
+      </div>
+    )
+  }
   const renderGroup = (group: GroupNode, depth: number): ReactNode => {
     const workspaceId = group.workspaceId
     const children = (childrenByParent.get(group.key) ?? []).filter(child => !collectedKeys.has(child.key))
@@ -583,9 +614,10 @@ function SessionTree({
           }}
           drag={workspaceDragProps}
         />
-        {childRows.length > 0 && (
+        {group.expanded && (childRows.length > 0 || collectedByParent.has(group.key)) && (
           <div role="group">
             {childRows}
+            {renderBucket(group.key, depth + 1)}
           </div>
         )}
         {sessions.map((node) => {
@@ -668,13 +700,6 @@ function SessionTree({
   }
 
   const groupRows = rootGroups.map(group => renderGroup(group, 0))
-  const collectedRows: ReactNode[] = []
-  if (collectedGroups.length > 0) {
-    rowKeys.push(`workspace:${FOLDED_GROUPS_KEY}`)
-    if (collectedExpanded) {
-      for (const group of collectedGroups) collectedRows.push(renderGroup(group, 1))
-    }
-  }
   return (
     <HoverCardGroup className={clsx(css.treeBody, css.wide)}>
       {workspaceDropAtListStart && <span className={css.listTopDropIndicator} aria-hidden="true" />}
@@ -690,16 +715,7 @@ function SessionTree({
           <EmptySessions rowState={rowState} onLeaveArchivedOnly={onLeaveArchivedOnly} t={t} />
         )}
         {groupRows}
-        {collectedGroups.length > 0 && (
-          <div className={css.groupSection} style={{ '--dsh-workspace-indent': '0px' } as CSSProperties}>
-            <FoldedGroupsRow
-              expanded={collectedExpanded}
-              onToggle={() => { setGroupExpanded(FOLDED_GROUPS_KEY, !collectedExpanded) }}
-              t={t}
-            />
-            {collectedRows.length > 0 && <div role="group">{collectedRows}</div>}
-          </div>
-        )}
+        {renderBucket(undefined, 0)}
       </AnimatedRows>
     </HoverCardGroup>
   )
@@ -1058,7 +1074,6 @@ export function WorkspaceBrowser({
     actions.retainAccountKeys([
       UNGROUPED_KEY,
       FLAT_SESSION_ORDER_KEY,
-      FOLDED_GROUPS_KEY,
       ...workspaces.map(workspace => workspace.workspaceId),
     ])
   }, [actions.retainAccountKeys, workspacePhase, workspaces])

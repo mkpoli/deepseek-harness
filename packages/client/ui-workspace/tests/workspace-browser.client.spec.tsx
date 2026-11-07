@@ -2900,7 +2900,7 @@ describe('Workspace folding', () => {
     expect(screen.getByText('Empty')).toBeTruthy()
   })
 
-  it('collects a chatless child and keeps it out of its parent section', () => {
+  it('collects a chatless child inside its parent section', () => {
     createWorkspaceViewStore().create().actions.setGroupBy('workspace-tree')
     const parent = { ...workspace('parent', ['parent-session'], 'Parent'), path: '/projects/parent' }
     const child = { ...workspace('child', [], 'Child'), path: '/projects/parent/child' }
@@ -2908,11 +2908,36 @@ describe('Workspace folding', () => {
       useSessions: hook(sessionState([summary('parent-session', 1)])),
       useWorkspaces: hook(workspaceState([parent, child])),
     })
-    expect(within(folderSection('Parent')).queryByText('Child')).toBeNull()
     expect(screen.queryByText('Child')).toBeNull()
-    fireEvent.click(collectedRow())
-    expect(screen.getByText('Child')).toBeTruthy()
-    expect(within(folderSection('Parent')).queryByText('Child')).toBeNull()
+    const parentSection = folderSection('Parent')
+    fireEvent.click(within(parentSection).getByLabelText(EMPTY_LABEL))
+    expect(within(parentSection).getByText('Child')).toBeTruthy()
+  })
+
+  it('folds consecutive chatless folders into one row per parent', () => {
+    createWorkspaceViewStore().create().actions.setGroupBy('workspace-tree')
+    const parent = { ...workspace('parent', ['parent-session'], 'Parent'), path: '/projects/parent' }
+    const sibling = { ...workspace('sibling', [], 'Sibling'), path: '/projects/parent/sibling' }
+    const mid = { ...workspace('mid', [], 'Mid'), path: '/projects/parent/mid' }
+    const leaf = { ...workspace('leaf', [], 'Leaf'), path: '/projects/parent/mid/leaf' }
+    const root = { ...workspace('root', [], 'Root'), path: '/projects/root' }
+    mount({
+      useSessions: hook(sessionState([summary('parent-session', 1)])),
+      useWorkspaces: hook(workspaceState([parent, sibling, mid, leaf, root])),
+    })
+    // Two parents hold chatless branches: the tree's root list and Parent itself.
+    expect(screen.getAllByLabelText(EMPTY_LABEL)).toHaveLength(2)
+    const parentSection = folderSection('Parent')
+    expect(within(parentSection).getAllByLabelText(EMPTY_LABEL)).toHaveLength(1)
+    fireEvent.click(within(parentSection).getByLabelText(EMPTY_LABEL))
+    expect(within(parentSection).getByText('Sibling')).toBeTruthy()
+    expect(within(parentSection).getByText('Mid')).toBeTruthy()
+    // The chain stays nested under Mid, which the tree opens like any ancestor,
+    // instead of opening another collection row.
+    expect(within(folderSection('Mid')).getByText('Leaf')).toBeTruthy()
+    expect(within(folderSection('Mid')).queryByLabelText(EMPTY_LABEL)).toBeNull()
+    fireEvent.click(within(parentSection).getByText('Mid'))
+    expect(screen.queryByText('Leaf')).toBeNull()
   })
 
   it('keeps every Workspace in place until the Session list is ready', () => {

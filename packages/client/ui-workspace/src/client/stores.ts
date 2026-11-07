@@ -8,7 +8,7 @@
 import { defineStore, type EngineStoreHandle } from '@deepseek-ai/dsh-client-store'
 import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/client'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import { reconcileManualOrder, type ArchivedFilter, type SessionRowState } from './tree.ts'
+import { isFoldedGroupsKey, reconcileManualOrder, type ArchivedFilter, type SessionRowState } from './tree.ts'
 
 /** Browser-local order account for the hierarchy-free flat Session list. */
 export const FLAT_SESSION_ORDER_KEY = '__flat_session_order__'
@@ -100,7 +100,7 @@ export function createWorkspaceViewStore(): EngineStoreHandle<WorkspaceViewState
       retainAccountKeys: (d, workspaceKeys: readonly string[]) => {
         const retained = new Set(workspaceKeys)
         d.groupExpansion = Object.fromEntries(
-          Object.entries(d.groupExpansion).filter(([key]) => retained.has(key)),
+          Object.entries(d.groupExpansion).filter(([key]) => retained.has(key) || isFoldedGroupsKey(key)),
         )
         d.sessionOrderByAccount = Object.fromEntries(
           Object.entries(d.sessionOrderByAccount).filter(([key]) => retained.has(key)),
