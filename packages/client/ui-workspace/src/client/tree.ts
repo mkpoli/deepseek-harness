@@ -99,8 +99,6 @@ export interface GroupNode {
   label: string
   /** Total visible sessions in the group. */
   sessionCount: number
-  /** The Workspace owns a blank Session, which stays hidden until it is the selected row. */
-  blank?: true
   expanded: boolean
   /** The group contains the selected session (active folder tint; supplied here so the renderer never scans). */
   containsCurrent: boolean
@@ -144,8 +142,6 @@ interface Group {
   cwd: string | undefined
   createdAt: number | undefined
   label: string
-  /** The Workspace owns a blank Session, independent of row visibility. */
-  blank: boolean
   sessions: SessionSummary[]
 }
 
@@ -320,9 +316,8 @@ function buildGroup(
   createdAt: number | undefined,
   label: string,
   members: readonly SessionSummary[],
-  blank: boolean,
 ): Group {
-  return { key, workspaceId, cwd, createdAt, label, blank, sessions: [...members] }
+  return { key, workspaceId, cwd, createdAt, label, sessions: [...members] }
 }
 
 /** Apply a stored Ungrouped order and append newly loose Sessions by recency. */
@@ -370,14 +365,9 @@ function groupByWorkspace(
     // The archived-only view lists archives, not the Workspace inventory, so
     // a Workspace without archived Sessions contributes no group.
     if (archivedFilter === 'only' && members.length === 0) continue
-    // A blank draft is a hidden row, yet its Workspace is in use and keeps its folder.
-    const blank = workspace.sessionIds.some((id) => {
-      const summary = list.byId[id]
-      return summary === undefined ? false : summary.blank
-    })
     groups.push(buildGroup(
       workspace.workspaceId, workspace.workspaceId, workspace.path,
-      Date.parse(workspace.createdAt), workspace.title, members, blank,
+      Date.parse(workspace.createdAt), workspace.title, members,
     ))
   }
   const stray = list.ids
@@ -392,7 +382,6 @@ function groupByWorkspace(
       undefined,
       '',
       orderedUngrouped(stray, ungroupedOrder, list.byId),
-      false,
     ))
   }
   return groups
@@ -481,7 +470,6 @@ export function deriveGroups(
       createdAt: g.createdAt,
       label: g.label,
       sessionCount: g.sessions.length,
-      ...(g.blank ? { blank: true as const } : {}),
       expanded,
       containsCurrent: g.key === currentGroup,
       sessions: expanded
@@ -519,8 +507,7 @@ export function topmostChatlessGroups(
   const collect = (group: GroupNode): boolean => {
     const cached = showsRows.get(group.key)
     if (cached !== undefined) return cached
-    const rows = group.blank === true || group.sessionCount > 0
-      || (children.get(group.key) ?? []).some(collect)
+    const rows = group.sessionCount > 0 || (children.get(group.key) ?? []).some(collect)
     showsRows.set(group.key, rows)
     return rows
   }

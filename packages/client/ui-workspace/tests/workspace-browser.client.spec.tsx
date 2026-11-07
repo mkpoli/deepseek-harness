@@ -2952,13 +2952,28 @@ describe('Workspace folding', () => {
     expect(collectedRow()).toBeTruthy()
   })
 
-  it('keeps a Workspace that owns a hidden blank draft', () => {
+  it('collects a Workspace whose only Session is a hidden blank draft', () => {
     mount({
       useSessions: hook(sessionState([summary('draft-session', 1, { blank: true })])),
       useWorkspaces: hook(workspaceState([workspace('draft', ['draft-session'], 'Draft')])),
     })
-    expect(screen.getByText('Draft')).toBeTruthy()
-    expect(screen.queryByLabelText(EMPTY_LABEL)).toBeNull()
+    expect(screen.queryByText('Draft')).toBeNull()
+    expect(collectedRow()).toBeTruthy()
+  })
+
+  it('folds a Workspace as soon as its last Session is archived', () => {
+    const archived = workspace('arch', ['kept'], 'Archived soon')
+    const b = mount({
+      useSessions: hook(sessionState([summary('kept', 1)])),
+      useWorkspaces: hook(workspaceState([archived])),
+    })
+    expect(screen.getByText('Archived soon')).toBeTruthy()
+    rerender(b, {
+      useSessions: hook(sessionState([summary('kept', 1)])),
+      useWorkspaces: hook(workspaceState([archived], [sid('kept')])),
+    })
+    expect(screen.queryByText('Archived soon')).toBeNull()
+    expect(collectedRow()).toBeTruthy()
   })
 
   it('collects a Workspace whose Sessions are all hidden by the archived filter', () => {

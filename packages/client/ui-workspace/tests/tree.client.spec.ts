@@ -1005,10 +1005,6 @@ describe('topmostChatlessGroups', () => {
     )).toEqual([])
   })
 
-  it('keeps a Workspace that owns a blank draft', () => {
-    expect(topmostChatlessGroups([{ ...group('draft'), blank: true }], new Map())).toEqual([])
-  })
-
   it('treats a parent missing from the derived groups as absent', () => {
     const collected = topmostChatlessGroups([group('child')], parents(['child', 'dropped']))
     expect(collected.map(node => node.key)).toEqual(['child'])
