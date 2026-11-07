@@ -1916,6 +1916,32 @@ describe('WorkspaceBrowser', () => {
     }
   })
 
+  it('marks the pending first session-list pull instead of an empty tree', () => {
+    const pending = sessionState([], { phase: 'pending' as const })
+    const b = mount({
+      useSessions: hook(pending),
+      useWorkspaces: hook(workspaceState([workspace('alpha', ['session-one'])])),
+    })
+    expect(screen.getByRole('status', { name: '正在加载会话…' }).querySelectorAll('[aria-hidden="true"]')).toHaveLength(2)
+    expect(screen.queryByText('暂无会话')).toBeNull()
+    b.store.actions.setGroupBy('flat')
+    rerender(b, {})
+    expect(screen.getByRole('status', { name: '正在加载会话…' }).querySelectorAll('[aria-hidden="true"]')).toHaveLength(2)
+    expect(screen.queryByText('暂无会话')).toBeNull()
+    rerender(b, { useSessions: hook(sessionState([summary('session-one', 10)])) })
+    expect(screen.queryByRole('status', { name: '正在加载会话…' })).toBeNull()
+    expect(screen.getByText('session-one')).toBeTruthy()
+  })
+
+  it('keeps the no-sessions empty state until the first pull arrives', () => {
+    const b = mount({ useSessions: hook(sessionState([], { phase: 'pending' as const })) })
+    expect(screen.queryByText('暂无会话')).toBeNull()
+    expect(screen.getByRole('status', { name: '正在加载会话…' })).toBeTruthy()
+    rerender(b, { useSessions: hook(sessionState([])) })
+    expect(screen.queryByRole('status', { name: '正在加载会话…' })).toBeNull()
+    expect(screen.getByText('暂无会话')).toBeTruthy()
+  })
+
   it.each(['clear', 'escape', 'outside'] as const)('animates %s search dismissal without carrying spacing motion through the rail', (dismissal) => {
     vi.useFakeTimers()
     try {

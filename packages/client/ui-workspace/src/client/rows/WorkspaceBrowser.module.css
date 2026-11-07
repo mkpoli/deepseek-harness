@@ -459,6 +459,42 @@
   80%, 100% { opacity: 1; }
 }
 
+/* First session-list pull: one title bar per placeholder on session-row
+   metrics, so an expanded Workspace never reads as finished and empty while
+   the Host list is outstanding. */
+.loadingRows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 2px;
+}
+
+.loadingLabel {
+  padding: 4px var(--dsh-sidebar-row-padding) 2px;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.loadingRow {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 32px;
+  padding-inline: calc(
+    var(--dsh-sidebar-row-padding) - var(--dsh-sidebar-paint-inset)
+    + var(--dsh-workspace-indent, 0px) + 16px + var(--dsh-sidebar-label-gap)
+  ) 8px;
+}
+
+.loadingBar {
+  width: 55%;
+  height: 12px;
+  border-radius: var(--dsw-radius-xs);
+  background: var(--dsw-alias-bg-skeleton);
+  animation: search-skeleton 2s cubic-bezier(0.36, 0, 0.64, 1) infinite;
+}
+
 /* One workspace section: header row + a compact expanded session run. */
 .groupSection {
   position: relative;
@@ -634,7 +670,8 @@
   }
 
   .skeletonDot,
-  .skeletonBar {
+  .skeletonBar,
+  .loadingBar {
     animation: none;
   }
 

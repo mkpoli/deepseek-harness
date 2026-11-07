@@ -324,6 +324,9 @@ function SessionTree({
 }: SessionTreeProps) {
   const panelActive = usePanelInfo(info => info.activePanelId !== null)
   const statuses = useSessionStatus(s => s)
+  // Sessions arrive in one Host batch: until it lands, the Workspaces have no
+  // members to show and must not read as finished and empty.
+  const sessionsPending = list.phase !== 'ready'
   const current = panelActive
     ? undefined
     : Object.values(list.byId).find(session => (session.retainedBy.mainView ?? 0) > 0)?.id
@@ -468,7 +471,7 @@ function SessionTree({
     && workspaceDrag?.over?.id === rootGroups[0].workspaceId
     && workspaceDrag.over.half === 'before'
 
-  const rowKeys: string[] = groups.length === 0 ? ['empty'] : []
+  const rowKeys: string[] = sessionsPending ? ['loading'] : groups.length === 0 ? ['empty'] : []
   const renderGroup = (group: GroupNode, depth: number): ReactNode => {
     const workspaceId = group.workspaceId
     const children = childrenByParent.get(group.key) ?? []
@@ -668,12 +671,31 @@ function SessionTree({
         ready={list.phase === 'ready' && workspaceReady && !nativeDragActive}
         resetKey={JSON.stringify([animationResetKey, watermarkMotionKey])}
       >
-        {groups.length === 0 && (
+        {sessionsPending && <LoadingSessions t={t} />}
+        {!sessionsPending && groups.length === 0 && (
           <EmptySessions rowState={rowState} onLeaveArchivedOnly={onLeaveArchivedOnly} t={t} />
         )}
         {groupRows}
       </AnimatedRows>
     </HoverCardGroup>
+  )
+}
+
+/**
+ * First-pull placeholder rows: the Host delivers every visible Session in one
+ * batch, so the tree marks the pending arrival instead of rendering its
+ * Workspaces as finished and empty.
+ */
+function LoadingSessions({ t }: Pick<SessionTreeProps, 't'>) {
+  return (
+    <div className={css.loadingRows} role="status" aria-label={t('sessions.loading')} data-row-key="loading">
+      <span className={css.loadingLabel}>{t('sessions.loading')}</span>
+      {[0, 1].map(index => (
+        <div key={index} className={css.loadingRow} aria-hidden="true">
+          <span className={css.loadingBar} />
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -706,6 +728,7 @@ function FlatList({
 }) {
   const panelActive = usePanelInfo(info => info.activePanelId !== null)
   const statuses = useSessionStatus(s => s)
+  const sessionsPending = list.phase !== 'ready'
   const rows = useMemo(
     () => deriveFlat(list, sessionIds, rowState, statuses),
     [list, sessionIds, rowState, statuses],
@@ -730,11 +753,12 @@ function FlatList({
         className={clsx(css.list, css.flatList)}
         role="tree"
         label={t('section.sessions')}
-        rowKeys={rows.length === 0 ? ['empty'] : rows.map(row => `session:${row.id}`)}
+        rowKeys={sessionsPending ? ['loading'] : rows.length === 0 ? ['empty'] : rows.map(row => `session:${row.id}`)}
         ready={list.phase === 'ready' && workspaceReady && drag === null}
         resetKey={animationResetKey}
       >
-        {rows.length === 0 && (
+        {sessionsPending && <LoadingSessions t={t} />}
+        {!sessionsPending && rows.length === 0 && (
           <EmptySessions rowState={rowState} onLeaveArchivedOnly={onLeaveArchivedOnly} t={t} />
         )}
         {rows.map((node) => {
