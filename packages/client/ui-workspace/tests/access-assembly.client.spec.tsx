@@ -33,6 +33,8 @@ function SidebarFrame({ renderSlot }: FrameProps) {
 }
 
 const WORKSPACE = 'w1' as WorkspaceId
+/** One Session keeps the Workspace in the tree instead of the collection of chatless Workspaces. */
+const WORKSPACE_SESSION = 'w1-session' as SessionId
 
 /**
  * The assembled browsing region over one Workspace, answering access from one snapshot owner.
@@ -66,10 +68,14 @@ async function bench(access: ClientAccessState, options: { ungroupedSession?: Se
       summary: { title: 'Loose', displayTitle: 'Loose', cwd: '/elsewhere' },
     })
   }
+  await runtime.sessions.add({
+    id: WORKSPACE_SESSION,
+    summary: { title: 'Project chat', displayTitle: 'Project chat', cwd: '/projects/project' },
+  })
   await runtime.workspaces.update((draft) => {
     draft.items = [{
       workspaceId: WORKSPACE, title: 'Project', path: '/projects/project',
-      sessionIds: [], createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z',
+      sessionIds: [WORKSPACE_SESSION], createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z',
     }] as never
   })
   await runtime.root.declare(

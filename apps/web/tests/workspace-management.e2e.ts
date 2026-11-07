@@ -662,6 +662,9 @@ describe('web e2e: workspace management (create / rename / grouping / hover affo
       ownedPage = hoverPage
       const consoleWatch = watchConsole(hoverPage)
       await hoverPage.goto(hoverScaffold.authenticatedUrl)
+      // Both Workspaces hold no Session, so the collection row owns their headers.
+      await hoverPage.getByLabel('Empty workspaces', { exact: true }).click()
+      await hoverPage.mouse.move(0, 0)
       const session = await seededSessionRow(hoverPage)
       const sessionTitle = await session.locator('[class*="title"]').innerText()
       const workspace = (title: string) => hoverPage.locator('[data-row-key^="workspace:"]')

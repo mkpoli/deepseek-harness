@@ -84,6 +84,10 @@ const workspaceState = (
   phase: 'ready',
   error: null,
 })
+/** A Workspace with one visible Session: the tree keeps it instead of collecting it. */
+function occupied(id: string, title = id): { workspace: WorkspaceView; session: SessionSummary } {
+  return { workspace: workspace(id, [`${id}-session`], title), session: summary(`${id}-session`, 1) }
+}
 const noPendingInteraction: SessionStatusSnapshot = new Map()
 function hook<T>(snapshot: T) {
   return function select<S>(selector: (state: T) => S): S { return selector(snapshot) }
@@ -336,12 +340,10 @@ describe('WorkspaceBrowser', () => {
   it('workspace hover card shows a POSIX home descendant as ~', () => {
     vi.useFakeTimers()
     try {
+      const project = occupied('project', 'Project')
       mount({
-        useWorkspaces: hook(workspaceState([{
-          ...workspace('project', []),
-          path: '/home/u/Documents/project',
-          title: 'Project',
-        }])),
+        useSessions: hook(sessionState([project.session])),
+        useWorkspaces: hook(workspaceState([{ ...project.workspace, path: '/home/u/Documents/project' }])),
         useHostInfo: selector => selector({ home: '/home/u', isLoopback: true }),
       })
       fireEvent.pointerEnter(screen.getByRole('treeitem').parentElement as HTMLElement)
@@ -642,11 +644,11 @@ describe('WorkspaceBrowser', () => {
 
   it('仅显示已归档 nests tree children of hidden Workspaces under the nearest shown ancestor', () => {
     mount({
-      useSessions: hook(sessionState([summary('live', 2), summary('stored', 1)])),
+      useSessions: hook(sessionState([summary('live', 2), summary('stored', 1), summary('child-live', 3)])),
       useWorkspaces: hook(workspaceState(
         [
           { ...workspace('root', ['live'], 'Projects'), path: '/projects' },
-          workspace('child', ['stored'], 'Child'),
+          workspace('child', ['stored', 'child-live'], 'Child'),
         ],
         [sid('stored')],
       )),
@@ -684,11 +686,12 @@ describe('WorkspaceBrowser', () => {
   })
 
   it('keeps Workspaces as siblings by default and restores the selected tree grouping', () => {
+    const root = occupied('root', 'Projects')
     const workspaces = hook(workspaceState([
-      { ...workspace('root', [], 'Projects'), path: '/projects' },
+      { ...root.workspace, path: '/projects' },
       workspace('child', ['child-session'], 'Child'),
     ]))
-    const sessions = hook(sessionState([summary('child-session', 1)]))
+    const sessions = hook(sessionState([root.session, summary('child-session', 1)]))
     const b = mount({ useWorkspaces: workspaces, useSessions: sessions })
     const parentSection = () => screen.getByText('Projects').closest<HTMLElement>('[class*="groupSection"]')!
     const choose = (name: string) => {
@@ -2078,8 +2081,10 @@ describe('WorkspaceBrowser', () => {
   })
 
   it('hides the add button when no directory-flow occupant is composed', () => {
+    const alpha = occupied('alpha')
     mount({
-      useWorkspaces: hook(workspaceState([workspace('alpha', [])])),
+      useSessions: hook(sessionState([alpha.session])),
+      useWorkspaces: hook(workspaceState([alpha.workspace])),
       useDirectoryFlow: bindSnapshotSelector({ getSnapshot: () => false, subscribe: () => () => {} }),
     })
     // Nothing to add with, so the header offers no dead button.
@@ -2089,13 +2094,16 @@ describe('WorkspaceBrowser', () => {
 
   it('uses the full expanded Workspace section when resolving a Workspace drop half', () => {
     const insertWorkspaceBefore = vi.fn(async () => {})
-    const sessions = sessionState(Array.from({ length: 5 }, (_, index) => summary(`beta-${index}`, index)))
+    const betaSessions = Array.from({ length: 5 }, (_, index) => summary(`beta-${index}`, index))
+    const alpha = occupied('alpha')
+    const tail = occupied('tail')
+    const sessions = sessionState([...betaSessions, alpha.session, tail.session])
     mount({
       useSessions: hook(sessions),
       useWorkspaces: hook(workspaceState([
-        workspace('alpha', []),
-        workspace('beta', sessions.ids),
-        workspace('tail', []),
+        workspace('alpha', [alpha.session.id]),
+        workspace('beta', betaSessions.map(item => item.id)),
+        workspace('tail', [tail.session.id]),
       ])),
       insertWorkspaceBefore,
     })
@@ -2116,11 +2124,11 @@ describe('WorkspaceBrowser', () => {
   })
 
   it('draws the first Workspace insertion boundary on the scroll container', () => {
+    const alpha = occupied('alpha')
+    const beta = occupied('beta')
     mount({
-      useWorkspaces: hook(workspaceState([
-        workspace('alpha', []),
-        workspace('beta', []),
-      ])),
+      useSessions: hook(sessionState([alpha.session, beta.session])),
+      useWorkspaces: hook(workspaceState([alpha.workspace, beta.workspace])),
     })
     const source = screen.getByText('beta').closest('[role="treeitem"]') as HTMLElement
     let firstSection = screen.getByText('alpha').closest('[role="treeitem"]')?.parentElement as HTMLElement
@@ -2139,12 +2147,12 @@ describe('WorkspaceBrowser', () => {
 
   it('accepts a document-level drop and commits the last Workspace marker on drag end', () => {
     const insertWorkspaceBefore = vi.fn(async () => {})
+    const alpha = occupied('alpha')
+    const beta = occupied('beta')
+    const tail = occupied('tail')
     mount({
-      useWorkspaces: hook(workspaceState([
-        workspace('alpha', []),
-        workspace('beta', []),
-        workspace('tail', []),
-      ])),
+      useSessions: hook(sessionState([alpha.session, beta.session, tail.session])),
+      useWorkspaces: hook(workspaceState([alpha.workspace, beta.workspace, tail.workspace])),
       insertWorkspaceBefore,
     })
     const source = screen.getByText('tail').closest('[role="treeitem"]') as HTMLElement
@@ -2463,11 +2471,11 @@ describe('WorkspaceBrowser', () => {
 
   it('labels an unrenamed default Workspace in the reader’s language and every other title verbatim', () => {
     const renameWorkspace = vi.fn(async () => {})
+    const alpha = occupied('alpha', 'default-workspace')
+    const beta = occupied('beta', 'default-workspace backup')
     const browser = mount({
-      useWorkspaces: hook(workspaceState([
-        workspace('alpha', [], 'default-workspace'),
-        workspace('beta', [], 'default-workspace backup'),
-      ])),
+      useSessions: hook(sessionState([alpha.session, beta.session])),
+      useWorkspaces: hook(workspaceState([alpha.workspace, beta.workspace])),
       renameWorkspace,
     })
     expect(screen.getByRole('button', { name: '工作区“默认工作区”的操作' })).toBeTruthy()
@@ -2643,9 +2651,16 @@ describe('Workspace tree grouping', () => {
   const team = workspace('team', ['team-session'], 'Team')
   const child = { ...workspace('child', ['child-session'], 'Child'), path: '/projects/team/child' }
   const section = (title: string) => screen.getByText(title).closest<HTMLElement>('[class*="groupSection"]')!
+  /** Give a fixture Workspace one visible Session so the tree keeps it out of the collection. */
+  const chatty = (base: WorkspaceView): WorkspaceView => ({ ...base, sessionIds: [`${base.workspaceId}-session` as SessionId] })
+  /** Seats over exactly the Session ids the mounted Workspaces own. */
+  const seatSessions = (...ids: string[]) => ({
+    useSessions: hook(sessionState(ids.map((id, index) => summary(id, 100 - index)))),
+  })
 
   it('adopts a parent directory and preserves its existing draft without confirmation', async () => {
     const b = mount({
+      ...seatSessions('child-session'),
       useWorkspaces: hook(workspaceState([child])),
       createWorkspace: vi.fn(async () => root),
       renderSlot: ((_name: string, owner: DirectoryFlowOwnerProps) => owner.open
@@ -2732,11 +2747,11 @@ describe('Workspace tree grouping', () => {
   })
 
   it('restores collapsed ancestors and keeps the flat view independent', () => {
-    const b = mount({ useWorkspaces: hook(workspaceState([root, team, child])) })
+    const b = mount({ ...seatSessions('root-session', 'team-session', 'child-session'), useWorkspaces: hook(workspaceState([root, team, child])) })
     fireEvent.click(screen.getByText('Projects'))
     expect(screen.queryByText('Team')).toBeNull()
     b.view.unmount()
-    const restored = mount({ useWorkspaces: b.props.useWorkspaces })
+    const restored = mount({ ...seatSessions('root-session', 'team-session', 'child-session'), useWorkspaces: b.props.useWorkspaces })
     expect(screen.queryByText('Child')).toBeNull()
     fireEvent.click(screen.getByText('Projects'))
     expect(screen.getByText('Child')).toBeTruthy()
@@ -2747,9 +2762,12 @@ describe('Workspace tree grouping', () => {
   })
 
   it('drops after an expanded parent through its last descendant', () => {
-    const outside = { ...workspace('outside', []), path: '/outside' }
-    const tail = { ...workspace('tail', []), path: '/tail' }
-    const b = mount({ useWorkspaces: hook(workspaceState([outside, root, team, child, tail])) })
+    const outside = { ...chatty(workspace('outside', [])), path: '/outside' }
+    const tail = { ...chatty(workspace('tail', [])), path: '/tail' }
+    const b = mount({
+      ...seatSessions('outside-session', 'root-session', 'team-session', 'child-session', 'tail-session'),
+      useWorkspaces: hook(workspaceState([outside, root, team, child, tail])),
+    })
     section('Projects').getBoundingClientRect = () => ({
       top: 0, bottom: 200, left: 0, right: 200, width: 200, height: 200,
       x: 0, y: 0, toJSON: () => ({}),
@@ -2763,8 +2781,11 @@ describe('Workspace tree grouping', () => {
   })
 
   it('avoids a Host reorder when only descendants separate adjacent siblings', () => {
-    const outside = { ...workspace('outside', []), path: '/outside' }
-    const b = mount({ useWorkspaces: hook(workspaceState([root, child, outside])) })
+    const outside = { ...chatty(workspace('outside', [])), path: '/outside' }
+    const b = mount({
+      ...seatSessions('root-session', 'child-session', 'outside-session'),
+      useWorkspaces: hook(workspaceState([root, child, outside])),
+    })
     section('outside').getBoundingClientRect = () => ({
       top: 0, bottom: 200, left: 0, right: 200, width: 200, height: 200,
       x: 0, y: 0, toJSON: () => ({}),
@@ -2777,23 +2798,26 @@ describe('Workspace tree grouping', () => {
   })
 
   it('moves a parent with its descendants while preserving their order', () => {
-    const outside = { ...workspace('outside', []), path: '/outside' }
-    const other = workspace('other', [])
-    const b = mount({ useWorkspaces: hook(workspaceState([root, team, child, other, outside])) })
+    const outside = { ...chatty(workspace('outside', [])), path: '/outside' }
+    const other = chatty(workspace('other', []))
+    const b = mount({
+      ...seatSessions('root-session', 'team-session', 'child-session', 'other-session', 'outside-session'),
+      useWorkspaces: hook(workspaceState([root, team, child, other, outside])),
+    })
     const source = screen.getByText('Projects').closest('[role="treeitem"]')!
     fireEvent.dragStart(source, { dataTransfer: dragData() })
     fireDrag(section('outside'), 'drop', 100)
     fireEvent.dragEnd(source)
     expect(b.props.insertWorkspaceBefore).toHaveBeenCalledExactlyOnceWith(root.workspaceId, undefined)
     rerender(b, { useWorkspaces: hook(workspaceState([team, child, other, outside, root])) })
-    expect(screen.getAllByRole('treeitem').map(row => row.textContent)).toEqual([
-      'outside', 'Projects', 'Team', 'Child', 'other',
-    ])
+    expect(screen.getAllByRole('treeitem')
+      .filter(row => row.getAttribute('data-row-key')?.startsWith('workspace:'))
+      .map(row => row.textContent)).toEqual(['outside', 'Projects', 'Team', 'Child', 'other'])
     expect(within(section('Team')).getByText('Child')).toBeTruthy()
   })
 
   it('keeps a saved ancestor collapse and highlights the current descendant', () => {
-    const b = mount({ useWorkspaces: hook(workspaceState([root, team, child])) })
+    const b = mount({ ...seatSessions('root-session', 'team-session', 'child-session'), useWorkspaces: hook(workspaceState([root, team, child])) })
     fireEvent.click(screen.getByText('Projects'))
     rerender(b, {
       useSessions: hook(sessionState([summary('child-session', 1)], { main: sid('child-session') })),
@@ -2815,10 +2839,13 @@ describe('Workspace tree grouping', () => {
   })
 
   it('keeps Workspace drag within its parent and uses the next displayed sibling as anchor', () => {
-    const b = mount({ useWorkspaces: hook(workspaceState([
-      workspace('alpha', []), { ...workspace('outside', []), path: '/elsewhere/outside' },
-      workspace('beta', []), workspace('gamma', []), root,
-    ])) })
+    const b = mount({
+      ...seatSessions('alpha-session', 'outside-session', 'beta-session', 'gamma-session', 'root-session'),
+      useWorkspaces: hook(workspaceState([
+        chatty(workspace('alpha', [])), { ...chatty(workspace('outside', [])), path: '/elsewhere/outside' },
+        chatty(workspace('beta', [])), chatty(workspace('gamma', [])), root,
+      ])),
+    })
     const alpha = screen.getByText('alpha').closest('[role="treeitem"]') as HTMLElement
     const beta = screen.getByText('beta').closest('[role="treeitem"]') as HTMLElement
     const outside = screen.getByText('outside').closest('[role="treeitem"]') as HTMLElement
@@ -2837,5 +2864,129 @@ describe('Workspace tree grouping', () => {
     fireEvent.dragEnd(alpha)
     expect(b.props.insertWorkspaceBefore).toHaveBeenCalledOnce()
     expect(b.props.insertWorkspaceBefore).toHaveBeenCalledWith(wid('alpha'), wid('gamma'))
+  })
+})
+
+describe('Workspace folding', () => {
+  const EMPTY_LABEL = '空工作区'
+  const collectedRow = () => screen.getByLabelText(EMPTY_LABEL)
+  const folderSection = (title: string) => screen.getByText(title).closest<HTMLElement>('[class*="groupSection"]')!
+
+  it('collects Workspaces without Sessions and keeps opening and creating Sessions there', () => {
+    const used = workspace('used', ['used-session'], 'Used')
+    const empty = workspace('empty', [], 'Empty')
+    const b = mount({
+      useSessions: hook(sessionState([summary('used-session', 1)])),
+      useWorkspaces: hook(workspaceState([used, empty])),
+    })
+    expect(screen.queryByText('Empty')).toBeNull()
+    expect(collectedRow().getAttribute('aria-expanded')).toBe('false')
+    fireEvent.click(collectedRow())
+    expect(collectedRow().getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByText('Empty')).toBeTruthy()
+    fireEvent.click(screen.getByText('Empty'))
+    fireEvent.click(screen.getByRole('button', { name: '在“Empty”中新建会话' }))
+    expect(b.props.startSession).toHaveBeenCalledWith(empty.workspaceId)
+  })
+
+  it('leaves a Workspace in the tree once its first Session arrives', () => {
+    const b = mount({
+      useSessions: hook(sessionState([summary('used-session', 1)])),
+      useWorkspaces: hook(workspaceState([workspace('used', ['used-session'], 'Used'), workspace('empty', ['empty-session'], 'Empty')])),
+    })
+    expect(screen.queryByText('Empty')).toBeNull()
+    rerender(b, { useSessions: hook(sessionState([summary('used-session', 1), summary('empty-session', 2)])) })
+    expect(screen.queryByLabelText(EMPTY_LABEL)).toBeNull()
+    expect(screen.getByText('Empty')).toBeTruthy()
+  })
+
+  it('collects a chatless child and keeps it out of its parent section', () => {
+    createWorkspaceViewStore().create().actions.setGroupBy('workspace-tree')
+    const parent = { ...workspace('parent', ['parent-session'], 'Parent'), path: '/projects/parent' }
+    const child = { ...workspace('child', [], 'Child'), path: '/projects/parent/child' }
+    mount({
+      useSessions: hook(sessionState([summary('parent-session', 1)])),
+      useWorkspaces: hook(workspaceState([parent, child])),
+    })
+    expect(within(folderSection('Parent')).queryByText('Child')).toBeNull()
+    expect(screen.queryByText('Child')).toBeNull()
+    fireEvent.click(collectedRow())
+    expect(screen.getByText('Child')).toBeTruthy()
+    expect(within(folderSection('Parent')).queryByText('Child')).toBeNull()
+  })
+
+  it('keeps every Workspace in place until the Session list is ready', () => {
+    const b = mount({
+      useSessions: hook(sessionState([], { phase: 'pending' })),
+      useWorkspaces: hook(workspaceState([workspace('empty', [], 'Empty')])),
+    })
+    expect(screen.getByText('Empty')).toBeTruthy()
+    expect(screen.queryByLabelText(EMPTY_LABEL)).toBeNull()
+    rerender(b, { useSessions: hook(sessionState([])) })
+    expect(screen.queryByText('Empty')).toBeNull()
+    expect(collectedRow()).toBeTruthy()
+  })
+
+  it('keeps a Workspace that owns a hidden blank draft', () => {
+    mount({
+      useSessions: hook(sessionState([summary('draft-session', 1, { blank: true })])),
+      useWorkspaces: hook(workspaceState([workspace('draft', ['draft-session'], 'Draft')])),
+    })
+    expect(screen.getByText('Draft')).toBeTruthy()
+    expect(screen.queryByLabelText(EMPTY_LABEL)).toBeNull()
+  })
+
+  it('collects a Workspace whose Sessions are all hidden by the archived filter', () => {
+    const stored = workspace('stored', ['archived-one'], 'Stored')
+    mount({
+      useSessions: hook(sessionState([summary('archived-one', 1)])),
+      useWorkspaces: hook(workspaceState([stored], [sid('archived-one')])),
+    })
+    expect(screen.queryByText('Stored')).toBeNull()
+    expect(collectedRow()).toBeTruthy()
+    fireEvent.click(collectedRow())
+    expect(screen.getByText('Stored')).toBeTruthy()
+  })
+
+  it('leaves the archived-only view without a collection', () => {
+    mount({
+      useSessions: hook(sessionState([summary('archived-one', 1)])),
+      useWorkspaces: hook(workspaceState([
+        workspace('stored', ['archived-one'], 'Stored'),
+        workspace('empty', [], 'Empty'),
+      ], [sid('archived-one')])),
+    })
+    fireEvent.click(screen.getByRole('button', { name: '视图选项' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: '仅显示已归档' }))
+    expect(screen.getByText('Stored')).toBeTruthy()
+    expect(screen.queryByText('Empty')).toBeNull()
+    expect(screen.queryByLabelText(EMPTY_LABEL)).toBeNull()
+  })
+
+  it('does not accept a Workspace drop on a collected row', () => {
+    const visible = workspace('visible', ['visible-session'], 'Visible')
+    const b = mount({
+      useSessions: hook(sessionState([summary('visible-session', 1)])),
+      useWorkspaces: hook(workspaceState([visible, workspace('hidden', [], 'Hidden')])),
+    })
+    fireEvent.click(collectedRow())
+    const source = screen.getByText('Visible').closest('[role="treeitem"]') as HTMLElement
+    const target = screen.getByText('Hidden').closest('[role="treeitem"]')!.parentElement as HTMLElement
+    fireEvent.dragStart(source, { dataTransfer: dragData() })
+    fireDrag(target, 'drop', 100)
+    fireEvent.dragEnd(source)
+    expect(b.props.insertWorkspaceBefore).not.toHaveBeenCalled()
+  })
+
+  it('remembers the collection expansion across mounts', () => {
+    const workspaces = hook(workspaceState([workspace('empty', [], 'Empty')]))
+    const first = mount({ useWorkspaces: workspaces })
+    expect(screen.queryByText('Empty')).toBeNull()
+    expect(screen.queryByText('暂无会话')).toBeNull()
+    fireEvent.click(collectedRow())
+    expect(screen.getByText('Empty')).toBeTruthy()
+    first.view.unmount()
+    mount({ useWorkspaces: workspaces })
+    expect(screen.getByText('Empty')).toBeTruthy()
   })
 })

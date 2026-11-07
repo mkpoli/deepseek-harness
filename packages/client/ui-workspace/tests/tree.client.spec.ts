@@ -10,9 +10,10 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { JsonValue } from '@deepseek-ai/dsh-util-values'
 import type { SessionProjectionSnapshot } from '@deepseek-ai/dsh-api-session-controller/client'
 import {
-  type ArchivedFilter,
+  type ArchivedFilter, type GroupNode,
   deriveFlat, deriveGroups, deriveSearchResults, orderByRecency, owningGroupKey, owningParentFolder,
-  pinCurrentBlank, reconcileManualOrder, sessionMemberIds, visibleSessionIds, workspaceLabel, UNGROUPED_KEY,
+  pinCurrentBlank, reconcileManualOrder, sessionMemberIds, topmostChatlessGroups, visibleSessionIds,
+  workspaceLabel, UNGROUPED_KEY,
 } from '../src/client/tree.ts'
 import { createWorkspaceViewStore } from '../src/client/stores.ts'
 
@@ -961,4 +962,55 @@ it('leaves unnamed history titles empty for locale-owned row labels', () => {
   item.displayTitle = 'Default workspace'
   const sessions = list(item)
   expect(deriveFlat(sessions, [item.id], noRows, noAttention)[0]?.title).toBe('')
+})
+
+describe('topmostChatlessGroups', () => {
+  const group = (key: string, sessionIds: readonly string[] = []): GroupNode => ({
+    key,
+    workspaceId: wid(key),
+    cwd: `/projects/${key}`,
+    createdAt: 1,
+    label: key,
+    sessionCount: sessionIds.length,
+    expanded: false,
+    containsCurrent: false,
+    sessions: sessionIds.map(id => ({
+      id: sid(id), title: id, blank: false, running: false, runningSubagentCount: 0,
+      completed: false, pinned: false, archived: false, updatedAt: 1,
+    })),
+  })
+  const parents = (...pairs: readonly [string, string][]): ReadonlyMap<string, string | undefined> =>
+    new Map(pairs)
+
+  it('collects a chatless branch once and keeps a chatless child nested under it', () => {
+    const collected = topmostChatlessGroups(
+      [group('root', ['root-session']), group('empty'), group('nested')],
+      parents(['nested', 'empty']),
+    )
+    expect(collected.map(node => node.key)).toEqual(['empty'])
+  })
+
+  it('collects a chatless child of a Workspace that shows Sessions', () => {
+    const collected = topmostChatlessGroups(
+      [group('root', ['root-session']), group('child')],
+      parents(['child', 'root']),
+    )
+    expect(collected.map(node => node.key)).toEqual(['child'])
+  })
+
+  it('keeps a chatless parent whose descendant shows Sessions', () => {
+    expect(topmostChatlessGroups(
+      [group('root'), group('child', ['child-session'])],
+      parents(['child', 'root']),
+    )).toEqual([])
+  })
+
+  it('keeps a Workspace that owns a blank draft', () => {
+    expect(topmostChatlessGroups([{ ...group('draft'), blank: true }], new Map())).toEqual([])
+  })
+
+  it('treats a parent missing from the derived groups as absent', () => {
+    const collected = topmostChatlessGroups([group('child')], parents(['child', 'dropped']))
+    expect(collected.map(node => node.key)).toEqual(['child'])
+  })
 })

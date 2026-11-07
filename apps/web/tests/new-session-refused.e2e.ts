@@ -41,6 +41,8 @@ describe.skipIf(MODE === 'record')('web e2e: refused New Session', () => {
         expect(scaffold.ctx.sessions.list()).toEqual([])
         expect(await page.getByRole('alert').count()).toBe(0)
 
+        // The refusal leaves the Workspace with no row, so the collection holds its header.
+        await page.getByLabel('空工作区', { exact: true }).click()
         await page.getByRole('treeitem').filter({ hasText: '默认工作区' }).hover()
         await page.getByRole('button', { name: '在“默认工作区”中新建会话', exact: true }).click()
         const notice = page.getByRole('alert').filter({ hasText: '新建会话失败' })

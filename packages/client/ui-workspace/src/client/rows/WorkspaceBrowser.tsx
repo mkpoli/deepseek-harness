@@ -35,9 +35,9 @@ import type { WorkspaceBrowserProps } from '../contract/slots.ts'
 import type { ArchivedFilter, GroupNode, SessionNode, SessionOrderBy, SessionRowState } from '../tree.ts'
 import {
   deriveFlat, deriveGroups, deriveSearchResults, orderByRecency, owningGroupKey, owningParentFolder,
-  pinCurrentBlank, reconcileManualOrder, sessionMemberIds, UNGROUPED_KEY,
+  pinCurrentBlank, reconcileManualOrder, sessionMemberIds, topmostChatlessGroups, UNGROUPED_KEY, FOLDED_GROUPS_KEY,
 } from '../tree.ts'
-import { ProjectRowItem, SearchResultItem, SessionNodeItem } from './Rows.tsx'
+import { FoldedGroupsRow, ProjectRowItem, SearchResultItem, SessionNodeItem } from './Rows.tsx'
 import { FLAT_SESSION_ORDER_KEY, type SessionGroupBy } from '../stores.ts'
 import { WorkspacePickFlow } from '../WorkspacePicker.tsx'
 import css from './WorkspaceBrowser.module.css'
@@ -388,10 +388,10 @@ function SessionTree({
     current,
     group.key === revealGroup ? revealSessionId : undefined,
   ))]))
-  const foldedKeys = new Set(groups.filter(group => !group.expanded).map(group => group.key))
+  const unexpandedKeys = new Set(groups.filter(group => !group.expanded).map(group => group.key))
   const underFoldedAncestor = (key: string): boolean => {
     for (let owner = parents.get(key); owner !== undefined; owner = parents.get(owner)) {
-      if (foldedKeys.has(owner)) return true
+      if (unexpandedKeys.has(owner)) return true
     }
     return false
   }
@@ -435,7 +435,10 @@ function SessionTree({
     workspaceDropCommitted.current = true
     setWorkspaceDrag(null)
     const owner = parents.get(activeDrag.workspaceId)
-    const siblings = workspaces.filter(workspace => parents.get(workspace.workspaceId) === owner)
+    // Collected rows are not visible siblings: anchoring on one would reorder
+    // against a row the user cannot see.
+    const siblings = workspaces.filter(workspace =>
+      parents.get(workspace.workspaceId) === owner && !collectedKeys.has(workspace.workspaceId))
     const rowIndex = siblings.findIndex(workspace => workspace.workspaceId === over.id)
     if (rowIndex === -1) return
     const anchor = over.half === 'before' ? over.id : siblings[rowIndex + 1]?.workspaceId
@@ -463,7 +466,14 @@ function SessionTree({
     }
     return children
   }, [groups, parents])
-  const rootGroups = childrenByParent.get(undefined) ?? []
+  // Folding waits for the ready list: before it lands every group looks chatless.
+  const collectedGroups = useMemo(
+    () => (list.phase === 'ready' ? topmostChatlessGroups(groups, parents) : []),
+    [groups, list.phase, parents],
+  )
+  const collectedKeys = new Set(collectedGroups.map(group => group.key))
+  const collectedExpanded = groupExpansion[FOLDED_GROUPS_KEY] ?? false
+  const rootGroups = (childrenByParent.get(undefined) ?? []).filter(group => !collectedKeys.has(group.key))
   const workspaceDropAtListStart = rootGroups[0]?.workspaceId !== undefined
     && workspaceDrag?.over?.id === rootGroups[0].workspaceId
     && workspaceDrag.over.half === 'before'
@@ -471,8 +481,9 @@ function SessionTree({
   const rowKeys: string[] = groups.length === 0 ? ['empty'] : []
   const renderGroup = (group: GroupNode, depth: number): ReactNode => {
     const workspaceId = group.workspaceId
-    const children = childrenByParent.get(group.key) ?? []
-    const compatibleDrag = workspaceDrag !== null && parents.get(workspaceDrag.workspaceId) === parents.get(group.key)
+    const children = (childrenByParent.get(group.key) ?? []).filter(child => !collectedKeys.has(child.key))
+    const compatibleDrag = !collectedKeys.has(group.key) && workspaceDrag !== null
+      && parents.get(workspaceDrag.workspaceId) === parents.get(group.key)
     const watermark = sessionWatermarks[group.key] ?? SESSION_WATERMARK_BASE
     const collapsed = watermarkRows(group.sessions, baselines.get(group.key) ?? SESSION_WATERMARK_BASE)
     const visible = watermarkRows(group.sessions, watermark)
@@ -657,6 +668,13 @@ function SessionTree({
   }
 
   const groupRows = rootGroups.map(group => renderGroup(group, 0))
+  const collectedRows: ReactNode[] = []
+  if (collectedGroups.length > 0) {
+    rowKeys.push(`workspace:${FOLDED_GROUPS_KEY}`)
+    if (collectedExpanded) {
+      for (const group of collectedGroups) collectedRows.push(renderGroup(group, 1))
+    }
+  }
   return (
     <HoverCardGroup className={clsx(css.treeBody, css.wide)}>
       {workspaceDropAtListStart && <span className={css.listTopDropIndicator} aria-hidden="true" />}
@@ -672,6 +690,16 @@ function SessionTree({
           <EmptySessions rowState={rowState} onLeaveArchivedOnly={onLeaveArchivedOnly} t={t} />
         )}
         {groupRows}
+        {collectedGroups.length > 0 && (
+          <div className={css.groupSection} style={{ '--dsh-workspace-indent': '0px' } as CSSProperties}>
+            <FoldedGroupsRow
+              expanded={collectedExpanded}
+              onToggle={() => { setGroupExpanded(FOLDED_GROUPS_KEY, !collectedExpanded) }}
+              t={t}
+            />
+            {collectedRows.length > 0 && <div role="group">{collectedRows}</div>}
+          </div>
+        )}
       </AnimatedRows>
     </HoverCardGroup>
   )
@@ -1030,6 +1058,7 @@ export function WorkspaceBrowser({
     actions.retainAccountKeys([
       UNGROUPED_KEY,
       FLAT_SESSION_ORDER_KEY,
+      FOLDED_GROUPS_KEY,
       ...workspaces.map(workspace => workspace.workspaceId),
     ])
   }, [actions.retainAccountKeys, workspacePhase, workspaces])

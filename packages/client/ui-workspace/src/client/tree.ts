@@ -17,6 +17,9 @@ import { workspaceTitleOf } from '@deepseek-ai/dsh-util-workspace-path'
 /** Group key for Sessions outside every Workspace. */
 export const UNGROUPED_KEY = ''
 
+/** Reserved group key for the single row that collects Workspaces without visible Sessions. */
+export const FOLDED_GROUPS_KEY = '__folded_groups__'
+
 /**
  * Resolve the Workspace browser group that owns one Session.
  * @param workspaces - authoritative Workspace membership.
@@ -78,6 +81,8 @@ export interface GroupNode {
   label: string
   /** Total visible sessions in the group. */
   sessionCount: number
+  /** The Workspace owns a blank Session, which stays hidden until it is the selected row. */
+  blank?: true
   expanded: boolean
   /** The group contains the selected session (active folder tint; supplied here so the renderer never scans). */
   containsCurrent: boolean
@@ -121,6 +126,8 @@ interface Group {
   cwd: string | undefined
   createdAt: number | undefined
   label: string
+  /** The Workspace owns a blank Session, independent of row visibility. */
+  blank: boolean
   sessions: SessionSummary[]
 }
 
@@ -295,8 +302,9 @@ function buildGroup(
   createdAt: number | undefined,
   label: string,
   members: readonly SessionSummary[],
+  blank: boolean,
 ): Group {
-  return { key, workspaceId, cwd, createdAt, label, sessions: [...members] }
+  return { key, workspaceId, cwd, createdAt, label, blank, sessions: [...members] }
 }
 
 /** Apply a stored Ungrouped order and append newly loose Sessions by recency. */
@@ -344,9 +352,14 @@ function groupByWorkspace(
     // The archived-only view lists archives, not the Workspace inventory, so
     // a Workspace without archived Sessions contributes no group.
     if (archivedFilter === 'only' && members.length === 0) continue
+    // A blank draft is a hidden row, yet its Workspace is in use and keeps its folder.
+    const blank = workspace.sessionIds.some((id) => {
+      const summary = list.byId[id]
+      return summary === undefined ? false : summary.blank
+    })
     groups.push(buildGroup(
       workspace.workspaceId, workspace.workspaceId, workspace.path,
-      Date.parse(workspace.createdAt), workspace.title, members,
+      Date.parse(workspace.createdAt), workspace.title, members, blank,
     ))
   }
   const stray = list.ids
@@ -361,6 +374,7 @@ function groupByWorkspace(
       undefined,
       '',
       orderedUngrouped(stray, ungroupedOrder, list.byId),
+      false,
     ))
   }
   return groups
@@ -449,6 +463,7 @@ export function deriveGroups(
       createdAt: g.createdAt,
       label: g.label,
       sessionCount: g.sessions.length,
+      ...(g.blank ? { blank: true as const } : {}),
       expanded,
       containsCurrent: g.key === currentGroup,
       sessions: expanded
@@ -458,6 +473,45 @@ export function deriveGroups(
     })
   }
   return groups
+}
+
+/**
+ * Collect the topmost Workspace of every branch that shows no Session rows, so
+ * one row can hold them and its descendants stay nested under it. A parent
+ * missing from the derived groups, as under the archived-only filter, counts as
+ * absent rather than chatless.
+ * @param groups - derived group sections in render order.
+ * @param parents - Workspace key to nearest nested parent key, when nesting is on.
+ * @returns the topmost chatless groups in render order.
+ */
+export function topmostChatlessGroups(
+  groups: readonly GroupNode[],
+  parents: ReadonlyMap<string, string | undefined>,
+): GroupNode[] {
+  const byKey = new Map(groups.map(group => [group.key, group]))
+  const children = new Map<string, GroupNode[]>()
+  for (const group of groups) {
+    const parent = parents.get(group.key)
+    if (parent === undefined) continue
+    const siblings = children.get(parent)
+    if (siblings === undefined) children.set(parent, [group])
+    else siblings.push(group)
+  }
+  const showsRows = new Map<string, boolean>()
+  const collect = (group: GroupNode): boolean => {
+    const cached = showsRows.get(group.key)
+    if (cached !== undefined) return cached
+    const rows = group.blank === true || group.sessionCount > 0
+      || (children.get(group.key) ?? []).some(collect)
+    showsRows.set(group.key, rows)
+    return rows
+  }
+  return groups.filter((group) => {
+    if (collect(group)) return false
+    const parent = parents.get(group.key)
+    const parentGroup = parent === undefined ? undefined : byKey.get(parent)
+    return parentGroup === undefined || collect(parentGroup)
+  })
 }
 
 /**

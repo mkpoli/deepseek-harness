@@ -414,6 +414,13 @@ describe('web e2e: sidebar search alignment and row action targets', () => {
     try {
       const extra = await scaffold.ctx.workspaceRegistry.create(directory, 'Sidebar drag workspace')
       try {
+        // A Workspace with no Session lives in the collection; start a draft
+        // there so it becomes a draggable root row.
+        await page.getByLabel('Empty workspaces', { exact: true }).click()
+        const extraRow = page.locator('[data-row-key^="workspace:"]')
+          .filter({ hasText: 'Sidebar drag workspace' })
+        await extraRow.hover()
+        await extraRow.getByRole('button', { name: 'New session in Sidebar drag workspace', exact: true }).click()
         const rows = page.locator('[role="tree"][aria-label="Sessions"] [data-row-key^="workspace:"]')
         await expect.poll(() => rows.count()).toBe(2)
         const before = await rows.evaluateAll(elements => elements.map(element => element.getAttribute('data-row-key')))

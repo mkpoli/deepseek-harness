@@ -243,6 +243,8 @@ async function launchDraftFixture(beforeBrowserOpen?: (page: Page, scaffold: Web
   await expect.poll(() => selectedSession(page), SETTLE).toBe(firstId)
   const secondPath = await mkdtemp(join(scaffold.workspaceCwd, 'draft-target-'))
   const second = await scaffold.ctx.workspaceRegistry.create(secondPath, 'Draft target')
+  // A Workspace with no Session yet lives under the collection row.
+  await page.getByLabel('Empty workspaces', { exact: true }).click()
   await page.getByText('Draft target', { exact: true }).first().waitFor()
   expect(second.sessionIds).toEqual([])
   return { scaffold, page, console, first, firstId, second }
