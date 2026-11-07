@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "DeepSeek 會話日誌上傳",
+    "description": "啟用後，隨官方模型 API 請求向 DeepSeek 上傳會話日誌。"
+  }
+}

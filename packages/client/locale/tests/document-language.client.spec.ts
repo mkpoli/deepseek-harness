@@ -84,6 +84,14 @@ describe('document language', () => {
     expect(langOf()).toBe('zh-CN')
   })
 
+  it('states zh-Hant when the browser asks for Traditional Chinese', async () => {
+    Object.defineProperty(navigator, 'languages', { value: ['zh-TW'], configurable: true })
+    Object.defineProperty(navigator, 'language', { value: 'zh-TW', configurable: true })
+    const { locale } = await bench()
+    expect(locale.getLocale().active).toBe('zh-Hant')
+    expect(langOf()).toBe('zh-Hant')
+  })
+
   it('follows an explicit Host preference that overrides browser detection', async () => {
     // Stored preference wins over the zh browser pinned above.
     const { locale } = await bench('en')

@@ -14,6 +14,20 @@ export const zh = {
   'version.copied': '版本号复制成功',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'panels.unpinTooltip': '從左側欄取消固定',
+  'panels.unpin': '從側邊欄取消固定{name}',
+  'session.new': '新會話',
+  'session.new.label': '新建會話',
+  'toggle.open': '打開側邊欄',
+  'toggle.collapse': '收起側邊欄',
+  'panels.label': '全局面板',
+  'navigation.label': '導航',
+  'panels.more': '更多',
+  'version.copied': '版本號複製成功',
+} satisfies Record<SidebarKey, string>
+
 /** The sidebar namespace key union. */
 export type SidebarKey = keyof typeof zh
 

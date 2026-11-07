@@ -28,7 +28,8 @@ describe('native locale initialization', () => {
     const host = stubConfigForm<LocaleSettings>()
     try {
       const locale = new LocaleRuntime(ctx, host.scope, { languages: ['ja-JP', 'zh-Hant', 'en-US'], preference: null })
-      expect(locale.getSnapshot().active).toBe('zh')
+      // `ja` is not registered at construction; the first registered tag wins.
+      expect(locale.getSnapshot().active).toBe('zh-Hant')
       expect(host.set).not.toHaveBeenCalled()
       locale.setLocale('en')
       expect(host.set).toHaveBeenCalledExactlyOnceWith('preference', 'en')

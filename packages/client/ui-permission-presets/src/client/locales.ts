@@ -19,6 +19,22 @@ export const zh = {
   'confirm.enable': '启用完全权限',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'title': '權限',
+  'description': '選擇新會話的默認權限模式',
+  'loading': '加載中',
+  'unavailable': '不可用',
+  'preset.readOnly': '僅可查看',
+  'preset.workspaceWrite': '工作區內修改',
+  'preset.fullAccess': '完全權限',
+  'confirm.title': '確認啟用完全權限？',
+  'confirm.description': '啟用完全權限後，新會話將減少確認步驟，並且可以直接執行更多操作，包括敏感操作、文件修改或外部命令。僅建議在你信任後續任務時使用。',
+  'confirm.acknowledge': '我已了解風險，並願意繼續',
+  'confirm.cancel': '取消',
+  'confirm.enable': '啟用完全權限',
+} satisfies Record<PermissionSettingsKey, string>
+
 /** The settings.permission namespace key union. */
 export type PermissionSettingsKey = keyof typeof zh
 
@@ -58,6 +74,27 @@ export const accessZh = {
   'auto.confirm.acknowledge': '我已了解这些风险，并愿意继续',
   'auto.confirm.enable': '启用自动审查',
 } satisfies Record<string, string>
+
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const accessZhHant = {
+  'mode': '訪問模式，當前：{name}',
+  'close': '關閉',
+  'preset.readOnly': '僅可查看',
+  'preset.workspaceWrite': '工作區內修改',
+  'preset.fullAccess': '完全權限',
+  'confirm.title': '確認啟用完全權限？',
+  'confirm.description': '啟用完全權限後，智能體將減少確認步驟，並且可以直接執行更多操作，包括敏感操作、文件修改或外部命令。僅建議在你信任當前任務時使用。',
+  'confirm.acknowledge': '我已了解風險，並願意繼續',
+  'confirm.cancel': '取消',
+  'confirm.enable': '啟用完全權限',
+  'auto.label': '自動審查',
+  'auto.badge': 'EXP',
+  'auto.description': '無沙箱運行；每次原生工具調用和 PTC 內層調用前由同一模型進行實驗性審查。',
+  'auto.confirm.title': '確認啟用自動審查（實驗）？',
+  'auto.confirm.description': '自動審查不使用沙箱。每次原生工具調用和 PTC 內層調用前，都會由與當前 agent 相同的模型進行審查；審查拒絕的調用由你批准或拒絕。此功能仍屬實驗性，可能誤放行或誤拒絕，並會消耗額外 token。',
+  'auto.confirm.acknowledge': '我已了解這些風險，並願意繼續',
+  'auto.confirm.enable': '啟用自動審查',
+} satisfies Record<PermissionAccessKey, string>
 
 /** Current-session popup-gate key union. */
 export type PermissionAccessKey = keyof typeof accessZh

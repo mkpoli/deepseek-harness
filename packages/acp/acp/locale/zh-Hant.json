@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "ACP 服務",
+    "description": "通過 JSON-RPC 標準輸入輸出驅動智能體，僅供自動化使用。"
+  }
+}

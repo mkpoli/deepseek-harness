@@ -17,6 +17,9 @@ ManifestDPIAware true
     !ifdef LANG_SIMPCHINESE
       SetFont /LANG=${LANG_SIMPCHINESE} "Microsoft YaHei UI" 9
     !endif
+    !ifdef LANG_TRADCHINESE
+      SetFont /LANG=${LANG_TRADCHINESE} "Microsoft JhengHei UI" 9
+    !endif
     !include "${INSTALLER_SOURCE_DIR}\uninstall.nsh"
   !endif
   !ifndef BUILD_UNINSTALLER

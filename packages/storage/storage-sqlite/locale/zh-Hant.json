@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "SQLite 存儲",
+    "description": "爲 Harness 存儲服務提供 SQLite 鍵值存儲後端。"
+  }
+}

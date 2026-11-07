@@ -27,6 +27,35 @@ export const zh = {
   transport: '无法确认操作结果，请刷新后重试。',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'heading': '推薦插件',
+  'official': '官方',
+  'detailsFor': '查看詳情：{title}',
+  'version-error': '插件與當前 DSH 版本不兼容，請更新 DSH 後重試。',
+  'management-error': '無法啟用插件，請打開詳情檢查錯誤後重試。',
+  'enable': '啟用',
+  'dismiss': '暫不需要',
+  'working': '正在處理…',
+  'scope': '啟用後可在所有會話中使用',
+  'enabled': '已啟用',
+  'already-enabled': '已在插件頁開啟，可查看詳情了解運行狀態',
+  'dismissed': '已忽略',
+  'replaced': '已替換',
+  'restart-required': '已保存，重啟 DSH 後生效',
+  'failed': '啟用失敗。可重試或在插件頁檢查。',
+  'retry': '重試啟用',
+  'unconfirmed': '無法確認插件是否已啟用，可重試確認。',
+  'lookup-failed': '無法讀取插件信息，請重試。',
+  'retryLookup': '重試',
+  'unavailable': '這個插件當前無法啟用，請在插件頁檢查。',
+  'unknown': '找不到這條推薦，請重新打開會話。',
+  'access-denied': '沒有修改此配置的權限。',
+  'not-live-root': '請在原會話中操作這條推薦。',
+  'closing': '服務正在重載，請稍後重試。',
+  'transport': '無法確認操作結果，請刷新後重試。',
+} satisfies Record<RecommendationKey, string>
+
 /** Keys shared by every card dictionary. */
 export type RecommendationKey = keyof typeof zh
 

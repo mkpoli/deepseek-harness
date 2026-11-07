@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "SSH 進程沙箱",
+    "description": "通過共享的 SSH 輔助程序，爲遠程 POSIX 進程構造沙箱命令。"
+  }
+}

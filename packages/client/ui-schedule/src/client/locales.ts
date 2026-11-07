@@ -2,7 +2,7 @@
  * `schedule.catalog` namespace dictionaries: the Session header catalog and the
  * Sidebar row mark with its hover-card task section.
  */
-import { frequencyEn, frequencyJa, frequencyEs, frequencyFr, frequencyDe, frequencyRu, frequencyPt, frequencyZh } from './frequency-locales.ts'
+import { frequencyEn, frequencyJa, frequencyEs, frequencyFr, frequencyDe, frequencyRu, frequencyPt, frequencyZh, frequencyZhHant } from './frequency-locales.ts'
 
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'schedule.catalog'
@@ -27,6 +27,27 @@ export const zh = {
   'mark.aria': '{count} 个自动化任务',
   'hover.more': '另有 {count} 个任务',
 } as const
+
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<ScheduleCatalogKey, string> = {
+  ...frequencyZhHant,
+  'trigger.label': '自動化任務',
+  'list.loading': '正在加載自動化任務…',
+  'list.error': '無法加載自動化任務。',
+  'list.retry': '重試',
+  'delete.action': '刪除',
+  'delete.pending': '正在刪除…',
+  'delete.label': '刪除自動化任務：{title}',
+  'list.open': '打開自動化任務詳情：{title}',
+  'trigger.one': '{count} 個自動化任務',
+  'trigger.other': '{count} 個自動化任務',
+  'list.aria': '已開啟的自動化任務',
+  'list.nextRun': '下次運行',
+  'frequency.once': '單次',
+  'frequency.every': '{value}{unit}一次',
+  'mark.aria': '{count} 個自動化任務',
+  'hover.more': '另有 {count} 個任務',
+}
 
 /** English dictionary, key-identical to the Chinese source of truth. */
 export const en: Record<ScheduleCatalogKey, string> = {

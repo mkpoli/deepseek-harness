@@ -7,6 +7,15 @@ export const zh = {
   frameTitle: 'NodeJS 诊断',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<keyof typeof zh, string> = {
+  'title': 'NodeJS 診斷',
+  'toggle': '展開或收起 NodeJS 診斷',
+  'close': '收起',
+  'resize': '調整 NodeJS 診斷面板高度',
+  'frameTitle': 'NodeJS 診斷',
+}
+
 /** English labels checked against the bottom-panel dictionary. */
 export const en: Record<keyof typeof zh, string> = {
   title: 'NodeJS inspector',

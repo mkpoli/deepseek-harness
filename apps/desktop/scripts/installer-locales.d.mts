@@ -1,3 +1,6 @@
+/** Installer resource files, one per shipped locale. */
+export const INSTALLER_LOCALE_IDS: readonly string[]
+
 /** One installer language's compiler identifier, UI strings and NSIS Modern UI test expectations. */
 export interface InstallerLocale {
   /** electron-builder language and resource filename without its suffix. */

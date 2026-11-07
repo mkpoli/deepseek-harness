@@ -1,0 +1,40 @@
+{
+  "nsisLanguage": "TRADCHINESE",
+  "strings": {
+    "INSTALLER_INSTALL": "立即安裝",
+    "INSTALLER_FINISH": "完成",
+    "INSTALLER_NATIVE_PROGRESS": "正在準備安裝… %d%%",
+    "INSTALLER_PROGRESS_EXTRACT": "正在解壓文件… %d%%",
+    "INSTALLER_PROGRESS_COPY": "正在安裝文件… %d%%",
+    "INSTALLER_PROGRESS_REGISTER": "正在完成安裝… %d%%",
+    "INSTALLER_PROGRESS_CLEAN": "正在清理臨時文件… %d%%",
+    "INSTALLER_CHOOSE_PATH": "選擇安裝位置",
+    "INSTALLER_BROWSE": "選擇",
+    "INSTALLER_LAUNCH": "立即啟動",
+    "INSTALLER_LAUNCH_FAILED": "無法啟動 DeepSeek Harness。請重試，或取消勾選立即啟動後關閉安裝程序。",
+    "INSTALLER_UI_ERROR": "無法初始化安裝窗口，請關閉後重試。",
+    "INSTALLER_THEME_ERROR": "主題參數須爲 /THEME=auto、/THEME=light 或 /THEME=dark。",
+    "INSTALLER_FAILED": "安裝未完成，請關閉安裝程序後重試。如仍然失敗，請重新下載安裝包。",
+    "INSTALLER_RUNNING": "DeepSeek Harness 正在運行，請先在系統托盤中退出應用後重試。",
+    "INSTALLER_DIRECTORY_FAILED": "無法替換安裝目錄。",
+    "INSTALLER_DIRECTORY_HINT": "請檢查安裝目錄的訪問權限，關閉佔用其中內容的程序後重新運行安裝器。如仍失敗，請複製錯誤詳情。",
+    "INSTALLER_DIRECTORY_RESTORE_HINT": "未能恢復原安裝目錄。請保留錯誤詳情中列出的備份目錄，聯繫支持人員後再安裝。",
+    "INSTALLER_PATH_INVALID": "請選擇本地磁盤上的完整文件夾路徑，不能使用磁盤根目錄、系統目錄、鏈接目錄或包含特殊字符的路徑。",
+    "INSTALLER_PATH_OWNERSHIP": "請選擇空文件夾，或 DeepSeek Harness 原來的安裝目錄。",
+    "INSTALLER_PATH_WRITABLE": "無法寫入此位置。請選擇當前用戶可寫入的文件夾；安裝程序不會申請管理員權限。",
+    "INSTALLER_DISK_SPACE": "此磁盤的可用空間不足，請選擇其他位置。",
+    "INSTALLER_PER_USER": "此安裝程序僅支持當前用戶。請先卸載已有的所有用戶安裝版本。",
+    "INSTALLER_EXTRACT_FAILED": "無法解壓應用程序文件。",
+    "INSTALLER_EXTRACT_HINT": "可能是安全軟件攔截了文件，或磁盤空間不足。請關閉安裝程序後重試；如仍然失敗，請將下方錯誤信息發送給我們。",
+    "INSTALLER_EXTRACT_COPY": "複製錯誤信息",
+    "INSTALLER_EXTRACT_EXPAND": "顯示詳情",
+    "INSTALLER_EXTRACT_COLLAPSE": "隱藏詳情",
+    "INSTALLER_EXTRACT_SAVED": "完整錯誤報告已保存到 %s",
+    "INSTALLER_EXTRACT_UNSAVED": "無法保存完整錯誤報告，請使用“複製錯誤信息”保留。",
+    "INSTALLER_EXTRACT_COPIED": "錯誤信息已複製到剪貼板。"
+  },
+  "uninstaller": {
+    "welcome": "歡迎",
+    "finished": "已從你"
+  }
+}

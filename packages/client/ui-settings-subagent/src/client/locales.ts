@@ -99,6 +99,45 @@ export const zh: Record<SubagentSettingsLocaleKey, string> = {
   subagentModelSelectionOff: '关闭后，子智能体使用配置的默认模型或继承父 Agent 的模型；已选模型会保留。',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<SubagentSettingsLocaleKey, string> = {
+  'overridden': '已覆蓋',
+  'reset': '恢復默認',
+  'readOnly': '本部署的設置爲只讀。',
+  'unavailable': '該插件當前未加載，暫時無法配置。',
+  'save': '保存',
+  'saving': '保存中…',
+  'saveFailed': '本部署沒有接受這些值，已保留供你修改。',
+  'subagentTitle': '子智能體',
+  'subagentDescription': '設置子智能體的遞歸層級、數量和模型。',
+  'subagentLimitsTitle': '運行限制',
+  'subagentMaxDepth': '最大遞歸深度',
+  'subagentDepthHelpLabel': '最大遞歸深度說明',
+  'subagentDepthHelp': '限制 Agent 創建子智能體的遞歸層級。',
+  'subagentDepthZero': '禁用子智能體',
+  'subagentDepthOne': '僅允許主 Agent 創建子智能體',
+  'subagentDepthOverride': '如果某個工具單獨設置了最大遞歸深度，以該工具的設置爲準。',
+  'subagentMaxActive': '子智能體並行數量上限',
+  'subagentCapacityHelpLabel': '子智能體並行數量上限說明',
+  'subagentCapacityHelp': '同一主 Agent 下，所有遞歸層級同時存活的子智能體總數，主 Agent 不計入。達到上限時，新的啟動請求會被拒絕。',
+  'subagentDepthInvalid': '請輸入不小於 0 的整數。',
+  'subagentCapacityInvalid': '請輸入不小於 1 的整數。',
+  'subagentModelSelectionTitle': '模型選擇',
+  'subagentModelSelectionToggle': '允許 Agent 爲子智能體選擇模型',
+  'subagentModelSelectionChoose': '開啟後，Agent 可以從下方授權模型中，爲每個子智能體選擇提供方、模型和推理強度。僅影響新會話。',
+  'subagentModelSelectionAllowed': 'Agent 可選擇的模型',
+  'subagentModelSelectionLoading': '正在加載模型…',
+  'subagentModelSelectionLoadFailed': '無法加載模型。',
+  'subagentModelSelectionRetry': '重試',
+  'subagentModelSelectionPartial': '部分模型提供方暫時無法加載；已保存的選擇仍可移除。',
+  'subagentModelSelectionUnavailable': '當前不可用',
+  'subagentModelSelectionUnavailableGroup': '已保存但當前不可用',
+  'subagentModelSelectionEmpty': '當前沒有模型提供方公布模型。',
+  'subagentModelSelectionRequired': '保存前請至少選擇一個模型。',
+  'subagentModelSelectionConflict': '設置已在其他位置更新。請放棄修改後重試。',
+  'subagentModelSelectionOff': '關閉後，子智能體使用配置的默認模型或繼承父 Agent 的模型；已選模型會保留。',
+}
+
 /**
  * The form frame's copy, read from this page's dictionary.
  * @param t - the page's locale reader.

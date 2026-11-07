@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "JSON 文件存儲",
+    "description": "將鍵值數據保存爲本地 JSON 文件。"
+  }
+}

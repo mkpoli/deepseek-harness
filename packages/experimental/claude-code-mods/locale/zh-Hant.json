@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Claude Code 擴展橋接",
+    "description": "加載 Claude Code 擴展模塊，並在 Harness 擴展點運行其鉤子鏈。"
+  }
+}

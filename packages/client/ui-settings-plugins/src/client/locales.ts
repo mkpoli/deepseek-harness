@@ -21,6 +21,15 @@ export const zh: Record<PluginsSettingsLocaleKey, string> = {
   empty: '本部署没有开放任何插件视图。',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<PluginsSettingsLocaleKey, string> = {
+  'nav': '內置插件',
+  'title': '內置插件',
+  'intro': '查看內置部署的插件列表',
+  'tabs': '插件視圖',
+  'empty': '本部署沒有開放任何插件視圖。',
+}
+
 /** Japanese copy, checked against the English keys. */
 export const ja = {
   'nav': '組み込みプラグイン',

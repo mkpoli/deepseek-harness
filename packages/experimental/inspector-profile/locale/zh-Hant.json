@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "開發者工具",
+    "description": "用於排查問題：在「會話數據診斷」中查看 DSH 爲會話記錄的內容，在「統計」標籤頁查看每輪/每步的上下文、耗時、緩存和工具成本，並在 Chrome DevTools 中調試 DSH 後端。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

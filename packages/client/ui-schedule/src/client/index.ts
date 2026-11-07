@@ -60,8 +60,8 @@ import { TaskManagerPage, type TaskManagerInjected } from './TaskManagerPage.tsx
 import type { TaskDetailInjected } from './TaskDetail.tsx'
 import { TaskManagerIcon } from './TaskManagerIcon.tsx'
 import { sessionLinkState } from './session-link.ts'
-import { en, ja, es, fr, de, ru, pt, NS, zh, type ScheduleCatalogKey } from './locales.ts'
-import { en as managerEn, ja as managerJa, es as managerEs, fr as managerFr, de as managerDe, ru as managerRu, pt as managerPt, zh as managerZh, type TaskManagerKey } from './task-manager-locales.ts'
+import { en, ja, es, fr, de, ru, pt, NS, zh, zhHant, type ScheduleCatalogKey } from './locales.ts'
+import { en as managerEn, ja as managerJa, es as managerEs, fr as managerFr, de as managerDe, ru as managerRu, pt as managerPt, zh as managerZh, zhHant as managerZhHant, type TaskManagerKey } from './task-manager-locales.ts'
 
 const MANAGER_NS = 'schedule.manager'
 const PANEL_ID = 'schedules' as MainPanelId
@@ -104,9 +104,10 @@ function inputCorrection(error: RemoteFailure): 'host.notFuture' | 'host.invalid
  * @param ctx - browser services used by these contributions.
  */
 export function apply(ctx: ClientContext): void {
-  ctx.effect(() => ctx.locale.register(NS, { zh, en, ja, es, fr, de, ru, pt }), 'ui-schedule: dictionaries')
+  ctx.effect(() => ctx.locale.register(NS, { zh, 'zh-Hant': zhHant, en, ja, es, fr, de, ru, pt }), 'ui-schedule: dictionaries')
   const managerDictionaries = {
     zh: managerZh,
+    'zh-Hant': managerZhHant,
     en: managerEn,
     ja: managerJa,
     es: managerEs,

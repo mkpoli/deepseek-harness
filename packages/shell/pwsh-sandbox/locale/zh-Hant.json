@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "PowerShell 沙箱執行",
+    "description": "在當前沙箱權限範圍內執行 PowerShell 命令。"
+  }
+}

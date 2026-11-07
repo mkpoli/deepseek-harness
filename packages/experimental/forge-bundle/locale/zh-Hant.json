@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "變更請求與工作樹",
+    "description": "在會話側欄集中跟蹤關聯的 GitHub PR：查看檢查狀態、評審意見與代碼差異，並把修改建議交給智能體繼續處理。也可查看本地改動，用獨立工作樹隔離任務。GitHub 功能需要本機安裝 gh 並登錄。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

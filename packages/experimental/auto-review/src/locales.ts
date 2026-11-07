@@ -12,6 +12,12 @@ export const zh = {
   deniedWithReason: (reason: string): string => `Auto review 拒绝了此调用：${reason}`,
 } satisfies typeof en
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'denied': 'Auto review 拒絕了此調用。',
+  'deniedWithReason': (reason: string): string => `Auto review 拒絕了此調用：${reason}`,
+} satisfies typeof en
+
 /** Japanese approval messages. */
 export const ja = {
   denied: '自動認可レビューがこの呼び出しを拒否しました。',

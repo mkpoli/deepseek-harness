@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "工作區依賴",
+    "description": "提供內置 Python、Node.js 和 pnpm 的絕對路徑。"
+  }
+}

@@ -24,6 +24,30 @@ export const zh = {
   'error.noteTooLarge': '描述太长，请缩短后再提交',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'action.like': '好的回答',
+  'action.likeActive': '取消標記',
+  'action.dislike': '有問題的回答',
+  'action.dislikeActive': '取消標記',
+  'dialog.title': '提交反饋',
+  'dialog.categories': '反饋分類',
+  'dialog.detail': '反饋詳情',
+  'dialog.hint': '填寫詳情以幫助我們改進體驗，提交內容會包括當前對話的日誌',
+  'category.task-result': '任務結果',
+  'category.instruction-following': '指令理解與遵循',
+  'category.product-interaction': '產品功能與交互',
+  'category.service-stability': '穩定性和速度',
+  'category.resource-cost': '資源使用與費用',
+  'category.security-privacy-permission': '安全隱私與權限',
+  'category.other': '其他',
+  'toast.recorded': '感謝你的反饋',
+  'error.conflict': '這條反饋已在別處改動，已顯示最新狀態',
+  'error.load': '反饋狀態加載失敗',
+  'error.generic': '反饋保存失敗',
+  'error.noteTooLarge': '描述太長，請縮短後再提交',
+} satisfies Record<MessageFeedbackKey, string>
+
 /** The feedback namespace key union. */
 export type MessageFeedbackKey = keyof typeof zh
 

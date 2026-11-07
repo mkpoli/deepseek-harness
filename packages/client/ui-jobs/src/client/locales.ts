@@ -45,6 +45,48 @@ export const zh = {
   'terminal.expandAria': '展开被折叠的 {n} 行输出',
 } as const
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<JobKey, string> = {
+  'count.idle.one': '{count} 個後臺任務',
+  'count.idle.other': '{count} 個後臺任務',
+  'list.aria': '後臺任務',
+  'section.live': '進行中',
+  'section.settledCount': '已結束 {count}',
+  'section.clear': '清空',
+  'row.expandAria': '展開 {label} 的實時輸出',
+  'row.collapseAria': '收起 {label} 的實時輸出',
+  'kill.stop': '停止任務 {label}',
+  'kill.confirm': '再次點擊確認停止',
+  'kill.confirmAction': '確認停止',
+  'kill.failed': '停止失敗',
+  'status.running': '運行中',
+  'status.stopping': '正在停止',
+  'status.completed': '已完成',
+  'status.killed': '已取消',
+  'status.failed': '已失敗',
+  'duration.seconds': '{seconds}秒',
+  'duration.minutes': '{minutes}分{seconds}秒',
+  'duration.hours': '{hours}小時{minutes}分',
+  'duration.title.live': '已運行 {duration}',
+  'duration.title.done': '耗時 {duration}',
+  'output.gap': '……較早的輸出已丟棄……',
+  'output.error': '實時輸出流中斷：{error}',
+  'terminal.signal': '信號 {signal}',
+  'terminal.exitCode': '退出碼 {code}',
+  'terminal.noExitCode': '未正常退出',
+  'terminal.commandLine': '命令第 {n} 行',
+  'terminal.running': '運行中',
+  'terminal.failed': '已失敗',
+  'terminal.done': '已完成',
+  'terminal.copy': '複製',
+  'terminal.copied': '已複製',
+  'terminal.noOutput': '（無輸出）',
+  'terminal.collapse': '收起',
+  'terminal.collapseAria': '收起輸出',
+  'terminal.expand': '展開其餘 {n} 行',
+  'terminal.expandAria': '展開被摺疊的 {n} 行輸出',
+}
+
 /** English dictionary, key-identical to the Chinese source of truth. */
 export const en: Record<JobKey, string> = {
   'count.idle.one': '{count} background job',

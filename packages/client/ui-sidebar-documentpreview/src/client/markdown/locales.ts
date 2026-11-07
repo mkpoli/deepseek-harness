@@ -6,6 +6,14 @@ export const zh = {
   'footnotes': '脚注',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'viewer.label': 'Markdown',
+  'code.copy': '複製',
+  'code.copied': '已複製',
+  'footnotes': '腳註',
+} satisfies Record<MarkdownPreviewKey, string>
+
 /** Markdown namespace keys. */
 export type MarkdownPreviewKey = keyof typeof zh
 

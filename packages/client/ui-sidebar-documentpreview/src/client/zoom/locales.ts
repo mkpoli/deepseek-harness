@@ -8,6 +8,16 @@ export const zoomZh = {
   zoomValue: '{percent}%',
 } as const
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zoomZhHant = {
+  'zoomControls': '縮放控件',
+  'zoomMenu': '選擇縮放比例',
+  'zoomOut': '縮小',
+  'zoomIn': '放大',
+  'zoomFitWidth': '適應寬度',
+  'zoomValue': '{percent}%',
+} satisfies Record<keyof typeof zoomZh, string>
+
 /** Shared English zoom copy. */
 export const zoomEn = {
   zoomControls: 'Zoom controls',

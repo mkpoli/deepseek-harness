@@ -17,6 +17,7 @@ function fixture(ja: unknown = { meta: { title: '名前 {name}', description: '�
   mkdirSync(directory, { recursive: true })
   writeFileSync(join(directory, 'en.json'), JSON.stringify({ meta: { title: 'Name {name}' } }))
   writeFileSync(join(directory, 'zh.json'), JSON.stringify({ meta: { title: '名称 {name}', description: '描述' } }))
+  writeFileSync(join(directory, 'zh-Hant.json'), JSON.stringify({ meta: { title: '名稱 {name}', description: '描述' } }))
   writeFileSync(join(directory, 'ja.json'), JSON.stringify(ja))
   for (const language of ['es', 'fr', 'de', 'ru', 'pt']) {
     writeFileSync(join(directory, `${language}.json`), JSON.stringify({ meta: { title: 'Name {name}', description: 'Localized description.' } }))
@@ -83,7 +84,7 @@ it('checks nested subpath locale resources and package-relative detail files', (
   const root = fixture()
   const directory = join(root, 'packages/demo/plugin/locale/tools')
   mkdirSync(directory)
-  for (const language of ['en', 'zh']) writeFileSync(join(directory, `${language}.json`), JSON.stringify({ meta: { title: 'Tools', detail: 'docs/TOOLS.md' } }))
+  for (const language of ['en', 'zh', 'zh-Hant']) writeFileSync(join(directory, `${language}.json`), JSON.stringify({ meta: { title: 'Tools', detail: 'docs/TOOLS.md' } }))
   mkdirSync(join(root, 'packages/demo/plugin/docs'))
   writeFileSync(join(root, 'packages/demo/plugin/docs/TOOLS.md'), '# Tools\n')
   expect(localeMetadataProblems(root).join('\n')).toContain('locale/tools')
@@ -114,6 +115,9 @@ it('permits missing Chinese resources for loadable plugins', () => {
   writeFileSync(join(directory, 'src/index.ts'), 'export function apply() {}')
   writeFileSync(join(directory, 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh-demo' }))
   rmSync(join(directory, 'locale/zh.json'))
+  // The Traditional catalogue may stay without a Simplified one; it must still
+  // carry only the fields English declares.
+  writeFileSync(join(directory, 'locale/zh-Hant.json'), JSON.stringify({ meta: { title: '名稱 {name}' } }))
   for (const language of ['es', 'fr', 'de', 'ru', 'pt']) writeFileSync(join(directory, `locale/${language}.json`), JSON.stringify({ meta: { title: 'Name {name}' } }))
   expect(localeMetadataProblems(root)).toEqual([])
 })

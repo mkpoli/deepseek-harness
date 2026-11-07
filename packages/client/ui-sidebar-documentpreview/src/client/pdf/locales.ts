@@ -1,4 +1,4 @@
-import { zoomEn, zoomJa, zoomEs, zoomFr, zoomDe, zoomRu, zoomPt, zoomZh } from '../zoom/locales.ts'
+import { zoomEn, zoomJa, zoomEs, zoomFr, zoomDe, zoomRu, zoomPt, zoomZh, zoomZhHant } from '../zoom/locales.ts'
 
 /** Copy owned by the PDF renderer. */
 export const zh = {
@@ -13,6 +13,20 @@ export const zh = {
   unsupported: 'PDF 预览需要完整文件内容',
   retry: '重试',
 } satisfies Record<string, string>
+
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  ...zoomZhHant,
+  'title': 'PDF',
+  'pageImage': 'PDF 第 {page} 頁',
+  'loading': '文檔渲染中...',
+  'rendering': '正在繪製頁面…',
+  'failed': '無法顯示 PDF：{message}',
+  'password': '此 PDF 需要密碼，暫不支持預覽',
+  'workerFailed': 'PDF 渲染進程無法繼續，請重試',
+  'unsupported': 'PDF 預覽需要完整文件內容',
+  'retry': '重試',
+} satisfies Record<PdfLocaleKey, string>
 
 /** PDF translation keys shared by both dictionaries. */
 export type PdfLocaleKey = keyof typeof zh

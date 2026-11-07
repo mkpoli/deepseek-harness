@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Codex 鉤子",
+    "description": "在 Harness 攔截點執行 Codex hooks.json 中配置的鉤子。"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "本地 Bash 執行",
+    "description": "通過本地子進程執行 Bash 命令。"
+  }
+}

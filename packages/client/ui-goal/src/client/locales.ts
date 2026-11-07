@@ -16,6 +16,22 @@ export const zh = {
   'action.clear': '清除目标',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'phase.active': '進行中的目標',
+  'phase.active.disarmed': '待繼續的目標',
+  'phase.paused': '已暫停的目標',
+  'phase.blocked': '受阻的目標',
+  'objective.aria': '目標內容',
+  'commandInput.aria': '指令輸入',
+  'action.save': '保存目標',
+  'action.cancel': '取消編輯',
+  'action.pause': '暫停目標',
+  'action.resume': '恢復目標',
+  'action.edit': '編輯目標',
+  'action.clear': '清除目標',
+} satisfies Record<GoalKey, string>
+
 /** The goal namespace key union. */
 export type GoalKey = keyof typeof zh
 

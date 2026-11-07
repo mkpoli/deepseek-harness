@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Bash 命令工具",
+    "description": "讓 AI 執行 Bash 命令，並按配置管理後臺運行和權限申請。"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "SSH 子進程",
+    "description": "通過共享的 POSIX SSH 輔助程序提供子進程和終端。"
+  }
+}

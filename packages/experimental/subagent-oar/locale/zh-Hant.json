@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "OAR 子智能體",
+    "description": "通過 OAR 向已安裝的編程智能體委派任務，並提供 Codex 和 Claude Code 配置。"
+  }
+}

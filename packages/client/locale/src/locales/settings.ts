@@ -5,6 +5,11 @@ export const zh = {
   'language.title': '语言',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'language.title': '語言',
+} satisfies Record<SettingsLocaleKey, string>
+
 /** The settings.locale namespace key union. */
 export type SettingsLocaleKey = keyof typeof zh
 

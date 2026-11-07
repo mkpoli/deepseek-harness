@@ -21,6 +21,24 @@ export const zh: Record<ActionCardKey, string> = {
   'row.ok': '已提议', 'row.error': '未显示', 'row.stopped': '已中断', 'row.inspect': '查看调用',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<ActionCardKey, string> = {
+  'expandBrief': '展開',
+  'collapseBrief': '收起',
+  'dismiss': '暫不需要',
+  'dismissed': '已忽略',
+  'replaced': '已替換',
+  'unavailable': '暫時無法執行，請到插件頁面查看',
+  'transport': '暫時無法確認結果，請重新連接並查看卡片狀態後再重試',
+  'row.title': '操作卡片',
+  'row.preparing': '正在準備卡片',
+  'row.running': '正在提議',
+  'row.ok': '已提議',
+  'row.error': '未顯示',
+  'row.stopped': '已中斷',
+  'row.inspect': '查看調用',
+}
+
 /** Japanese card frame, fallback and tool-row copy. */
 export const ja: Record<ActionCardKey, string> = {
   expandBrief: 'すべて表示', collapseBrief: '折りたたむ',

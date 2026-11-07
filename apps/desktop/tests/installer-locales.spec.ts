@@ -5,12 +5,12 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, it, onTestFinished } from 'vitest'
-import { readInstallerLocales, renderInstallerStrings } from '../scripts/installer-locales.mjs'
+import { INSTALLER_LOCALE_IDS, readInstallerLocales, renderInstallerStrings } from '../scripts/installer-locales.mjs'
 
 function fixture(): string {
   const directory = mkdtempSync(join(tmpdir(), 'dsh-installer-locales-'))
   onTestFinished(() => { rmSync(directory, { recursive: true, force: true }) })
-  for (const id of ['en_US', 'zh_CN', 'ja_JP', 'es_ES', 'fr_FR', 'de_DE', 'ru_RU', 'pt_BR']) {
+  for (const id of INSTALLER_LOCALE_IDS) {
     writeFileSync(join(directory, `${id}.json`), readFileSync(new URL(`../installer/locales/${id}.json`, import.meta.url)))
   }
   return directory
@@ -18,17 +18,17 @@ function fixture(): string {
 
 it('generates Japanese NSIS strings from the same files that select packaged languages', () => {
   const locales = readInstallerLocales()
-  expect(locales.map(locale => locale.id)).toEqual(['en_US', 'de_DE', 'es_ES', 'fr_FR', 'ja_JP', 'pt_BR', 'ru_RU', 'zh_CN'])
+  expect(locales.map(locale => locale.id)).toEqual(['en_US', 'de_DE', 'es_ES', 'fr_FR', 'ja_JP', 'pt_BR', 'ru_RU', 'zh_CN', 'zh_TW'])
   const source = renderInstallerStrings(locales)
   expect(source).toContain('LangString INSTALLER_INSTALL ${LANG_JAPANESE} "今すぐインストール"')
   expect(source).toContain('LangString INSTALLER_NATIVE_PROGRESS ${LANG_JAPANESE} "インストールを準備しています… %d%%"')
   expect(source).toContain('!ifdef LANG_JAPANESE\n')
-  expect(source.match(/^LangString /gmu)).toHaveLength(248)
+  expect(source.match(/^LangString /gmu)).toHaveLength(279)
   const japanese = locales.filter(locale => locale.id === 'ja_JP')
   expect(renderInstallerStrings(japanese)).not.toContain('${LANG_ENGLISH}')
 })
 
-it.each(['en_US', 'zh_CN', 'ja_JP', 'es_ES', 'fr_FR', 'de_DE', 'ru_RU', 'pt_BR'])('rejects a missing %s configuration', (id) => {
+it.each(INSTALLER_LOCALE_IDS)('rejects a missing %s configuration', (id: string) => {
   const directory = fixture()
   rmSync(join(directory, `${id}.json`))
   expect(() => readInstallerLocales(directory)).toThrow(`missing ${id}.json`)
@@ -68,7 +68,8 @@ it('uses the real electron-builder language identifiers and English fallback', (
   }
   const locales = readInstallerLocales()
   expect(locales[0]?.id).toBe('en_US')
-  expect(locales.map(locale => locale.id.split('_')[0]).sort()).toEqual([...SHIPPED_LOCALE_IDS].sort())
+  expect(locales.map(locale => locale.id)).toEqual([...INSTALLER_LOCALE_IDS].sort((a, b) => a === 'en_US' ? -1 : b === 'en_US' ? 1 : a.localeCompare(b)))
+  expect(INSTALLER_LOCALE_IDS).toHaveLength(SHIPPED_LOCALE_IDS.length)
   createAddLangsMacro({ macro: (_name, lines) => {
     expect(lines.map(line => /MUI_LANGUAGE "([^" ]+)"/u.exec(line)?.[1]?.toUpperCase()))
       .toEqual(locales.map(locale => locale.nsisLanguage))

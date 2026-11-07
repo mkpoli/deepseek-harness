@@ -72,6 +72,40 @@ export const zh = {
   'app.terminal': '终端',
 } as const
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<OpenInAppKey, string> = {
+  ...PRODUCT_NAMES,
+  'menu.openIn': '在應用中打開',
+  'menu.openInSidebar': '在側邊欄打開',
+  'menu.openInFloat': '在浮窗中打開',
+  'menu.finder': '在 Finder 中顯示',
+  'menu.reveal': '在文件夾顯示',
+  'menu.defaultApp': '使用默認應用打開',
+  'menu.external': '外部瀏覽器打開',
+  'menu.copyLink': '複製鏈接地址',
+  'menu.copyPath': '複製文件路徑',
+  'menu.copyDirectoryPath': '複製文件夾路徑',
+  'menu.copied': '已複製',
+  'menu.copyFailed': '無法複製，請檢查內容是否可用後重試',
+  'open.title': '用 {app} 打開',
+  'path.appDefault': '{app}（默認）',
+  'path.appsError': '無法獲取應用列表',
+  'shortcut.busy': '正在打開工作區',
+  'shortcut.unavailable': '當前工作區或本地應用不可用',
+  'open.tooltip': '在本地打開',
+  'path.open': '打開',
+  'path.more': '更多打開方式',
+  'path.reveal': '顯示文件位置',
+  'path.opened': '已在其它設備打開',
+  'path.revealed': '已在其它設備顯示文件位置',
+  'path.openError': '打開失敗，請重試',
+  'path.revealError': '無法顯示文件位置，請重試',
+  'app.finder': '訪達',
+  'app.explorer': '文件資源管理器',
+  'app.filemanager': '文件管理器',
+  'app.terminal': '終端',
+}
+
 /** English dictionary, key-identical to the Chinese source of truth. */
 export const en: Record<OpenInAppKey, string> = {
   'menu.openIn': 'Open in',

@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Computer Use",
+    "description": "目前僅支持 macOS，Windows 支持正在開發中。爲已有及新建 PTC 會話加載 Computer Use。請切換到 PTC 模式來使用，並授予輔助功能和屏幕錄製權限。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

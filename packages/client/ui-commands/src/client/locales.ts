@@ -39,6 +39,38 @@ export const zh = {
   'notice.attachmentsUnsupported': '/{command} 不接受附件，请先移除附件',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'section.add': '添加',
+  'section.commands': '指令',
+  'label.goal': '目標',
+  'label.plan': '計劃',
+  'label.feedback': '反饋',
+  'label.compact': '壓縮',
+  'label.permission': '權限',
+  'label.export': '下載日誌',
+  'description.goal': '設置或查看長期任務目標',
+  'description.plan': '進入或退出計劃模式',
+  'description.feedback': '發送關於當前會話的反饋',
+  'description.compact': '壓縮以上對話內容',
+  'description.permission': '切換權限預設（沙箱模式與審批策略）',
+  'description.export': '將當前會話內容導出爲 ZIP',
+  'token.goal': '目標',
+  'token.plan': '計劃',
+  'token.feedback': '反饋',
+  'token.compact': '壓縮',
+  'token.permission': '權限',
+  'token.export': '導出',
+  'search.placeholder': '搜索…',
+  'search.aria': '篩選選項',
+  'status.loading': '正在加載選項…',
+  'status.applying': '正在應用…',
+  'status.empty': '無選項',
+  'overlay.aria': '/{command} 選項',
+  'listbox.aria': '/{command} 匹配項',
+  'notice.attachmentsUnsupported': '/{command} 不接受附件，請先移除附件',
+} satisfies Record<CommandKey, string>
+
 /** The command namespace key union. */
 export type CommandKey = keyof typeof zh
 

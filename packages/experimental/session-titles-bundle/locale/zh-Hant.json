@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "隨對話更新的標題",
+    "description": "根據你的所有消息生成會話標題，並在主要任務變化時更新，而不是只根據第一條消息生成。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

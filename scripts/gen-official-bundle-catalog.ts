@@ -72,7 +72,9 @@ export function generateOfficialBundleCatalog(root: string, names: readonly stri
     }
     for (const value of [meta.title, meta.description]) {
       for (const language of SHIPPED_LOCALE_IDS) {
-        if (typeof value[language] !== 'string' || value[language].trim() === '') {
+        // Localized metadata keys are lowercase language ids.
+        const text = value[language.toLowerCase()]
+        if (typeof text !== 'string' || text.trim() === '') {
           throw new Error(`${packageName}: Official metadata requires ${language} text`)
         }
       }

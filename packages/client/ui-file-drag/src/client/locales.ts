@@ -1,6 +1,11 @@
 /** File drag failure copy owned by the transfer plugin. */
 export const zh = { failed: '拖放失败，请重试' }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'failed': '拖放失敗，請重試',
+} satisfies Record<keyof typeof zh, string>
+
 /** English file drag failure copy. */
 export const en = { failed: 'Drag failed. Try again.' } satisfies Record<keyof typeof zh, string>
 

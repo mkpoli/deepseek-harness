@@ -27,7 +27,7 @@ import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
 
-import { SHIPPED_LOCALE_IDS, localeTokens, hasInvisibleLocaleCharacters, type ShippedLocaleId } from './shipped-locales.ts'
+import { SHIPPED_LOCALE_IDS, shippedLocaleExportName, localeTokens, hasInvisibleLocaleCharacters, type ShippedLocaleId } from './shipped-locales.ts'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 
@@ -103,7 +103,7 @@ function dictionariesIn(file: string): Dictionary[] {
   // before parsing — the silent narrowing this gate exists to prevent. A bare
   // `\b(zh|en)\b` misses `zhSettings`/`accessZh`, because `\b` does not hold
   // between `h` and an uppercase letter.
-  if (!/\b(zh|en|ja|es|fr|de|ru|pt)\b|\b(zh|en|ja|es|fr|de|ru|pt)[A-Z]|(Zh|En|Ja|Es|Fr|De|Ru|Pt)\b/.test(text)) return []
+  if (!/\b(zh|en|ja|es|fr|de|ru|pt)\b|\b(zh|en|ja|es|fr|de|ru|pt)[A-Z]|(Zh|En|Ja|Es|Fr|De|Ru|Pt)\b|\bzhHant\b/.test(text)) return []
   const source = ts.createSourceFile(file, text, ts.ScriptTarget.ESNext, true)
   const found: Dictionary[] = []
   const rel = relative(file)
@@ -242,16 +242,21 @@ function unwrap(node: ts.Expression | undefined): ts.Expression | undefined {
  * @returns locale plus pair key, or undefined when the name names no locale.
  */
 function localeOf(name: string): { locale: ShippedLocaleId; pair: string } | undefined {
-  for (const locale of SHIPPED_LOCALE_IDS) {
-    const other = locale[0]!.toUpperCase() + locale.slice(1)
-    if (name === locale) return { locale, pair: '' }
+  // Longer tags first: `zhHant` must not be read as a `zh`-prefixed pair.
+  const locales = [...SHIPPED_LOCALE_IDS].sort((a, b) => b.length - a.length)
+  for (const locale of locales) {
+    const id = shippedLocaleExportName(locale)
+    const other = id[0]!.toUpperCase() + id.slice(1)
+    if (name === id) return { locale, pair: '' }
     // Synthetic names for inline shapes carry their own pair key after the
     // first ':' (the enclosing array's line, or the namespace expression).
+    // Inline shapes carry the BCP 47 tag itself, script subtag included.
     if (name.startsWith(`${locale}@`)) return { locale, pair: name.slice(name.indexOf(':')) }
-    if (name.startsWith(locale) && name.length > 2 && /[A-Z]/.test(name[2] ?? '')) {
-      return { locale, pair: name.slice(2) }
+    if (name.startsWith(`${id}@`)) return { locale, pair: name.slice(name.indexOf(':')) }
+    if (name.startsWith(id) && name.length > id.length && /[A-Z]/.test(name[id.length] ?? '')) {
+      return { locale, pair: name.slice(id.length) }
     }
-    if (name.endsWith(other)) return { locale, pair: name.slice(0, -2) }
+    if (name.endsWith(other)) return { locale, pair: name.slice(0, -other.length) }
   }
   return undefined
 }

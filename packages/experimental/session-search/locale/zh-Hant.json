@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "會話搜索",
+    "description": "詢問以往的工作，例如“上週我們是怎麼修好連接池洩漏的？”，智能體會搜索同一工作區的歷史會話來回答。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

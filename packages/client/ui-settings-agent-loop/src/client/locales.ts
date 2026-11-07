@@ -40,6 +40,22 @@ export const zh: Record<AgentLoopSettingsLocaleKey, string> = {
   invalidNumber: '请填数字；留空表示使用默认值。',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<AgentLoopSettingsLocaleKey, string> = {
+  'title': 'Agent 循環',
+  'description': '控制 Agent 派發工具調用的方式。',
+  'maxParallel': '並行工具調用數',
+  'maxParallelHint': '同一步內最多同時運行多少個可並行的調用。',
+  'overridden': '已覆蓋',
+  'reset': '恢復默認',
+  'readOnly': '本部署的設置爲只讀。',
+  'unavailable': '該插件當前未加載，暫時無法配置。',
+  'save': '保存',
+  'saving': '保存中…',
+  'saveFailed': '本部署沒有接受這些值，已保留供你修改。',
+  'invalidNumber': '請填數字；留空表示使用默認值。',
+}
+
 /**
  * The form frame's copy, read from this page's dictionary.
  * @param t - the page's locale reader.

@@ -15,6 +15,18 @@ export const zh = {
   'menu.userOnly': '仅用户',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'row.title': '加載技能',
+  'row.running': '正在加載 skill',
+  'row.preparing': '準備加載技能',
+  'row.failed': 'skill 加載失敗',
+  'row.stopped': 'skill 加載已中止',
+  'row.instructions': '說明',
+  'row.inspect': '查看',
+  'menu.userOnly': '僅用戶',
+} satisfies Record<SkillKey, string>
+
 /** The skill namespace key union. */
 export type SkillKey = keyof typeof zh
 

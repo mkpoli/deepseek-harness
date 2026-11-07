@@ -57,7 +57,11 @@ export function localeMetadataProblems(root: string): string[] {
           if (translated[key] === undefined) problems.push(`${directory}/${language}.json: missing ${key}`)
           else if (expected[key] === undefined) problems.push(`${directory}/${language}.json: unexpected ${key}`)
           else {
-            if (language !== 'ja' && key === 'meta.description' && ((zh[key] !== undefined && /\p{Script=Han}/u.test(zh[key]) && translated[key] === zh[key])
+            // Traditional and Simplified Chinese share Han text: a sentence
+            // whose characters have identical forms translates to itself, so
+            // only the English side proves an untranslated description here.
+            const sameHan = language !== 'zh-Hant' && zh[key] !== undefined && /\p{Script=Han}/u.test(zh[key]) && translated[key] === zh[key]
+            if (language !== 'ja' && key === 'meta.description' && (sameHan
               || (en[key] !== undefined && translated[key] === en[key]))) {
               problems.push(`${directory}/${language}.json: ${key} contains untranslated source text`)
             }

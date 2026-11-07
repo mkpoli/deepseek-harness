@@ -30,6 +30,25 @@ export const zh = {
   'time.years': '{n}年',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'section.files': '文件與文件夾',
+  'section.subagents': '子智能體',
+  'section.sessions': '對話',
+  'candidate.noCwd': '（無工作目錄）',
+  'crumb.root': '工作區',
+  'fileOpen.title': '無法打開文件',
+  'fileOpen.failed': '無法打開“{path}”，請重試或關閉此提示',
+  'fileOpen.close': '關閉',
+  'fileOpen.retry': '重試',
+  'time.now': '剛剛',
+  'time.minutes': '{n}分鐘',
+  'time.hours': '{n}小時',
+  'time.days': '{n}天',
+  'time.months': '{n}個月',
+  'time.years': '{n}年',
+} satisfies Record<ReferenceKey, string>
+
 /** The reference namespace key union. */
 export type ReferenceKey = keyof typeof zh
 

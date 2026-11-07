@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url'
 
 const defaultDirectory = fileURLToPath(new URL('../installer/locales/', import.meta.url))
 
+/** Installer resource files, one per shipped locale. */
+export const INSTALLER_LOCALE_IDS = ['en_US', 'zh_CN', 'zh_TW', 'ja_JP', 'es_ES', 'fr_FR', 'de_DE', 'ru_RU', 'pt_BR']
+
 /**
  * Read and validate installer translations before generating compiler input.
  * @param {string} directory - Directory containing one JSON file per installer language.
@@ -36,7 +39,7 @@ export function readInstallerLocales(directory = defaultDirectory) {
     return { id: name.slice(0, -5), nsisLanguage: resource.nsisLanguage, strings,
       uninstaller: dictionary('uninstaller' in resource ? resource.uninstaller : undefined) }
   })
-  for (const id of ['en_US', 'zh_CN', 'ja_JP', 'es_ES', 'fr_FR', 'de_DE', 'ru_RU', 'pt_BR']) {
+  for (const id of INSTALLER_LOCALE_IDS) {
     if (!locales.some(locale => locale.id === id)) throw new Error(`installer locales: missing ${id}.json`)
   }
   const english = locales.find(locale => locale.id === 'en_US')

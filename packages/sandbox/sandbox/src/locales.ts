@@ -10,6 +10,11 @@ export const zh = {
   escalation: (mode: string, justification: string): string => `允许本次操作使用 ${mode} 权限：${justification}`,
 } satisfies typeof en
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'escalation': (mode: string, justification: string): string => `允許本次操作使用 ${mode} 權限：${justification}`,
+} satisfies typeof en
+
 /** Japanese escalation messages. */
 export const ja = {
   escalation: (mode: string, justification: string): string => `${mode} 権限でこの操作を許可します：${justification}`,

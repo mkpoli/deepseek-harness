@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "會話反饋命令",
+    "description": "通過 /feedback 等入口記錄用戶對會話的評價。"
+  }
+}

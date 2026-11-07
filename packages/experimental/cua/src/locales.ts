@@ -14,6 +14,13 @@ export const zh = {
   approve: '本会话允许',
 } satisfies Record<keyof typeof en, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'question': '允許智能體通過 Computer Use 控制此應用嗎？',
+  'detail': '在插件頁面管理所有會話的應用權限。',
+  'approve': '本會話允許',
+} satisfies Record<keyof typeof en, string>
+
 /** Japanese application-access messages. */
 export const ja = {
   question: 'エージェントが Computer Use でこのアプリを操作することを許可しますか？',

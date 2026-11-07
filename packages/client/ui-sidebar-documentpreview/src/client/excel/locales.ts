@@ -10,6 +10,25 @@ export const zh = {
   retry: '重试',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'title': '表格',
+  'language': 'zh',
+  'loading': '文檔渲染中...',
+  'invalid': '無法打開此表格。請檢查文件格式、內容或密碼保護。',
+  'tooLarge': '此表格超過預覽大小限制。',
+  'timeout': '打開表格超時。請縮小文件後重試。',
+  'encoding': '無法識別此文本文件的編碼。請另存爲 UTF-8 或帶 BOM 的 UTF-16 後重試。',
+  'formulaWarning': '此工作簿包含公式，顯示結果可能缺失或不準確。',
+  'unsupportedNotice': '當前預覽不支持此工作簿中的{features}。請使用系統應用打開，以獲得完整體驗。',
+  'charts': '圖表',
+  'images': '圖片',
+  'shapes': '形狀',
+  'conditionalFormatting': '條件格式',
+  'featureSeparator': '、',
+  'retry': '重試',
+} satisfies Record<ExcelPreviewKey, string>
+
 /** Excel preview dictionary keys. */
 export type ExcelPreviewKey = keyof typeof zh
 

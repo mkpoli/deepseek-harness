@@ -35,6 +35,41 @@ export const zh = {
   'plan.discuss': '要求修改',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'error.incomplete': '請先完成這道問題。',
+  'error.unanswered': '請選擇一個選項或填寫自定義答案。',
+  'error.unavailable': '當前無法提交，請稍候再試。',
+  'error.resubmit': '回答未送達，工作已繼續，請再提交一次。',
+  'status.sent': '回答已發送；面板未能關閉。',
+  'wait.takeTime': '慢慢回答',
+  'wait.countdown': '{seconds} 秒後繼續工作',
+  'wait.paused': '已暫停 · 剩餘 {seconds} 秒',
+  'wait.held': '會一直等你回答',
+  'wait.continued': '已繼續工作，仍可回答',
+  'review.status': '已回答',
+  'review.skipped': '這道問題當時被跳過。',
+  'reply.label': '問題與回答',
+  'reply.answerLabel': '回答：',
+  'reply.skipped': '已跳過',
+  'nav.prev': '上一題',
+  'nav.next': '下一題',
+  'nav.minimize': '收起問題卡片',
+  'nav.maximize': '展開問題卡片',
+  'nav.cancel': '放棄整組問題',
+  'nav.close': '收起問題面板，可從工具調用重新打開',
+  'text.expand': '展開',
+  'text.collapse': '收起',
+  'option.recommended': '推薦',
+  'custom.placeholder': '輸入你的答案',
+  'action.skip': '跳過',
+  'action.next': '下一題',
+  'plan.header': '計劃待審',
+  'plan.approve': '同意執行',
+  'plan.decline': '拒絕',
+  'plan.discuss': '要求修改',
+} satisfies Record<QuestionKey, string>
+
 /** The question namespace key union. */
 export type QuestionKey = keyof typeof zh
 

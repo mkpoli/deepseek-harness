@@ -19,6 +19,24 @@ export const zh = {
   'dialog.commandFailed': '无法启动 Session 导出。',
 } as const
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<keyof typeof zh, string> = {
+  'menu.copyMarkdown': '複製會話爲 Markdown',
+  'menu.download': '下載 Session 日誌',
+  'menu.feedback': '反饋',
+  'toast.copied': 'Session 已複製爲 Markdown',
+  'toast.preparationFailed': '無法讀取 Session 進行複製，請重試',
+  'toast.clipboardFailed': '無法寫入剪貼板，請檢查剪貼板權限後重試',
+  'dialog.session': 'Session：{sessionId}',
+  'dialog.preparingTitle': '正在導出 Session',
+  'dialog.preparingDescription': '正在準備包含指定 Session、子 Session 和附件的 ZIP 文件',
+  'dialog.successTitle': 'Session 導出已開始下載',
+  'dialog.successDescription': '瀏覽器正在下載 Session ZIP 文件。',
+  'dialog.errorTitle': 'Session 導出失敗',
+  'dialog.close': '關閉',
+  'dialog.commandFailed': '無法啟動 Session 導出。',
+}
+
 /** English Session export strings. */
 export const en: Record<keyof typeof zh, string> = {
   'menu.copyMarkdown': 'Copy Session as Markdown',

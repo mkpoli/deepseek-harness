@@ -20,6 +20,26 @@ export const zh = {
   'chip.exitFailed': '退出计划模式失败',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'chip.label': '計劃',
+  'preview.title': '計劃',
+  'preview.document': '計劃 · Markdown',
+  'preview.action': '打開',
+  'preview.open': '在側邊欄打開計劃',
+  'preview.full': '查看全文',
+  'preview.openNamed': '打開計劃：{title}',
+  'preview.loading': '正在讀取計劃…',
+  'preview.failed': '無法讀取計劃',
+  'preview.invalidAddress': '計劃地址無效',
+  'preview.notFound': '未找到這份計劃',
+  'preview.unavailable': '計劃預覽不可用',
+  'preview.expired': '臨時計劃預覽已失效，請從仍在等待審批的卡片重新打開。',
+  'chip.on.aria': '計劃模式已開啟，按下關閉',
+  'chip.on.title': '計劃模式已開啟 — 點擊關閉（/plan off）',
+  'chip.exitFailed': '退出計劃模式失敗',
+} satisfies Record<PlanKey, string>
+
 /** The plan namespace key union. */
 export type PlanKey = keyof typeof zh
 

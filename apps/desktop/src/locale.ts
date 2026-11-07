@@ -383,6 +383,197 @@ export const zh = {
   mandatoryNotification: '返回应用确认安装并重启。',
 } as const satisfies DesktopMessages
 
+/** Traditional Chinese copy in Mainland-standard forms, checked against the English keys. */
+export const zhHant = {
+  cliCommandMenu: '管理 dsh 命令…',
+  cliCommandTitle: '管理 dsh 命令',
+  cliCommandLocation: 'Desktop 命令：{path}',
+  cliCommandSelected: '當前 dsh 命令：{path}',
+  cliCommandTarget: '當前啟動器目標：{path}',
+  cliCommandShadowed: '另一個 dsh 的優先級更高。請移除或調整該安裝的順序，以默認使用 Desktop 命令；也可以通過完整路徑運行 Desktop 命令。',
+  cliCommandSelectionUnknown: '無法確認 shell 中的命令。別名或另一個 dsh 安裝可能具有更高優先級。',
+  cliCommandInstalled: 'Desktop 命令已安裝。',
+  cliCommandNotInstalled: '將 Desktop 命令添加到終端。',
+  cliCommandBroken: 'Desktop 命令需要修復。',
+  cliCommandInstall: '安裝',
+  cliCommandRepair: '修復',
+  cliCommandRemove: '移除',
+  cliCommandClose: '關閉',
+  cliCommandSwitch: '繼續使用 Desktop 命令？',
+  cliCommandPreserve: '現有命令會被保留，不會修改其他安裝或 shell 啟動文件。',
+  cliCommandContinue: '繼續',
+  cliCommandInstallApp: '請先將 Desktop 安裝到“應用程序”文件夾，再管理 dsh 命令。',
+  cliCommandUpdating: '正在安裝更新。請在安裝完成後管理命令。',
+  cliCommandNewTerminal: '打開新終端並運行 dsh --version。',
+  cliCommandRemoved: '已移除 Desktop 命令註冊。',
+  cliCommandPreviousRestored: '已恢復之前的啟動器。',
+  cliCommandOtherKept: '其他命令安裝保持不變。',
+  cliCommandBackupKept: '之前的啟動器保留在：{path}',
+  cliCommandChanged: '對話框打開期間命令或 PATH 已改變。請重新打開“管理 dsh 命令”檢查當前狀態。',
+  cliCommandOwnershipError: '命令註冊或備份已改變，未移除無關命令。',
+  cliCommandFailed: '無法更新命令。請檢查應用是否已安裝、目標位置是否可寫，然後重試。',
+  application: '應用',
+  fileMenu: '文件',
+  closePage: '關閉頁面或窗口',
+  aboutMenu: '關於 DeepSeek Harness',
+  aboutProduct: 'DeepSeek Harness',
+  aboutVersion: '版本 V{version}',
+  hideApplication: '隱藏 DeepSeek Harness',
+  hideOtherApplications: '隱藏其他',
+  showAllApplications: '顯示全部',
+  substitutionsMenu: '替換',
+  speechMenu: '語音',
+  quitApplication: '退出 DeepSeek Harness',
+  openApplication: '打開 DeepSeek Harness',
+  quit: '退出',
+  cancel: '取消',
+  quitTitle: '退出 DeepSeek Harness？',
+  quitActiveTasks: '當前正在運行的任務將會中斷',
+  quitScheduledTasks: '應用關閉期間，定時任務不會運行',
+  quitActiveAndScheduledTasks: '當前正在運行的任務將會中斷，且應用關閉期間，定時任務不會運行',
+  backgroundNoticeBody: '正在運行的任務不會中斷，可在系統托盤中重新打開窗口',
+  backgroundNoticeConfirm: '確認',
+  edit: '編輯',
+  menuBar: '應用菜單',
+  delete: '刪除',
+  undo: '撤銷',
+  redo: '重做',
+  cut: '剪切',
+  copy: '複製',
+  paste: '粘貼',
+  selectAll: '全選',
+  startupFailed: 'DeepSeek Harness 無法使用',
+  fatalSummary: '應用無法啟動或已意外停止。',
+  startupAddressInUse: '有其他正在運行的 DSH（如其他 dsh web、桌面端），無法同時啟動，請退出其他正在運行的 DSH 後重啟。',
+  diagnosticTruncated: '… 錯誤詳情已截短。',
+  reportWrittenTo: '診斷報告：{path}',
+  getDiagnosticReport: '獲取診斷報告',
+  reportPending: '診斷報告仍在保存，可點擊“獲取診斷報告”再次檢查。',
+  reportUnavailable: '診斷報告未能保存，反饋問題時可提供此窗口的截圖。',
+  reportShareHint: '已打開報告位置，請將選中的文件附在支持工單中。',
+  reportRevealFailed: '無法打開報告位置，請通過下方路徑查找文件。',
+  startupReinstallAdvice: '如果應用文件缺失或損壞，請關閉應用並重新安裝。任務數據存儲在獨立位置。',
+  exitApplication: '退出',
+  restartApplication: '重啟',
+  recoveryOperationFailed: '恢復操作失敗',
+  disableThirdPartyPlugins: '禁用第三方插件、備份 profile patch 並重啟',
+  welcomeTitle: 'DeepSeek Harness',
+  welcomeBrand: 'DeepSeek Harness',
+  welcomeTaglineBefore: '歡迎使用 ',
+  welcomeTaglineBrand: 'DeepSeek Harness',
+  welcomeTaglineAfter: '',
+  welcomeDescription: '組裝無限可能，共探智能上限',
+  welcomeAuthStarting: '正在打開登錄…',
+  welcomeAuthWaiting: '沒有自動打開瀏覽器？',
+  welcomeAuthWaitingDescription: '複製登錄鏈接，用瀏覽器手動打開完成登錄',
+  welcomeAuthExchanging: '正在完成登錄…',
+  welcomeAuthExpired: '登錄已超時',
+  welcomeAuthExpiredDescription: '請重新登錄後繼續操作',
+  welcomeAuthFailed: '登錄未完成，請重試。',
+  welcomeAuthCopyLink: '複製登錄鏈接',
+  welcomeAuthCopied: '已複製',
+  welcomeAuthCopyFailed: '複製失敗，請重試',
+  welcomeAuthCancel: '取消',
+  welcomeAuthRetry: '重新登錄',
+  welcomeSignIn: '登錄',
+  welcomeApiKey: '添加 API Key',
+  welcomeKeyTitle: '添加一個 API Key 開始使用',
+  welcomeKeyDescription: '配置 DeepSeek 官方模型，即可開始使用',
+  welcomeKeyPlaceholder: '輸入 API 密鑰',
+  welcomeKeySave: '保存並繼續',
+  welcomeKeyLater: '稍後配置',
+  welcomeKeyBack: '返回登錄',
+  welcomeSessionExpired: '登錄信息已失效，請重新登錄',
+  welcomeKeyBlank: '請輸入 API 密鑰。',
+  welcomeKeyInvalid: '請僅輸入 API 密鑰，不要包含引號、空格或環境變量賦值。',
+  welcomeKeyFailed: '無法保存 API 密鑰，請重試。',
+  welcomeContinueFailed: '無法打開工作區，請重試。',
+  checkUpdatesMenu: '檢查更新…',
+  reloadPageMenu: '刷新頁面',
+  toggleDevToolsMenu: '開發者工具',
+  restartAppHostMenu: '重啟應用與 Host',
+  updateConfigurationFailed: '更新配置無法應用。請修正配置文件並重啟，或在設置中選擇更新渠道。',
+  updateConfigurationRead: '配置文件異常，更新已暫停',
+  updateConfigurationFormat: '配置文件異常，更新已暫停',
+  updateConfigurationChannel: '配置文件異常，更新已暫停',
+  updateConfigurationCleanup: '更新已暫停：無法清理舊更新，請重啟應用',
+  updateReloadSettings: '重新讀取配置',
+  updateConfigurationDetails: '查看配置',
+  updateShowSettingsFile: '顯示配置文件',
+  updateCheckFailedTitle: '更新檢查失敗',
+  updateCheckFailed: '檢查更新失敗，請稍後重試。',
+  updateDownloadFailed: '下載更新失敗，請重試。',
+  updateDownloadSpaceFailed: '磁盤空間不足，無法下載更新。請釋放空間後重試。',
+  updateDownloadPermissionFailed: '無法寫入更新文件，請檢查目錄權限後重試。',
+  updateDownloadBusyFailed: '更新文件正被佔用，請關閉佔用它的程序後重試。',
+  updateInstallFailed: '安裝更新失敗，請稍後重試。',
+  updateCheckNetworkFailed: '檢查更新失敗，請檢查網絡連接後重試。',
+  updateDownloadNetworkFailed: '下載更新失敗，請檢查網絡連接後重試。',
+  updateInstallNetworkFailed: '安裝更新失敗，請檢查網絡連接後重試。',
+  unknownError: '未知錯誤',
+  updateCheckTitle: '檢查更新',
+  updateCurrentDetail: '當前版本：{version}',
+  updateCurrent: '已是最新版本',
+  updateChecking: '正在檢查更新…',
+  updateDownload: '下載更新',
+  updateDownloadedTitle: '新版本 {version} 已準備就緒',
+  updateDownloadedDetail: '更新期間應用將暫時關閉，完成後會自動打開。',
+  updateDownloadedDetailWindows: '更新期間應用將暫時關閉，完成後會自動打開。\n\n更新可能需要一些時間，請耐心等待，期間請勿重複啟動應用。',
+  updateClose: '關閉',
+  updateAcknowledge: '確定',
+  updateLater: '稍後更新',
+  updateDownloading: '正在下載 {percent}%…',
+  updateVerifying: '正在校驗更新文件…',
+  updateInstalling: '正在準備重啟…',
+  updateRetry: '重試更新',
+  updateActiveTasks: '仍有進行中的任務',
+  updateActiveTasksDetail: '更新將停止進行中的任務並重啟應用，是否繼續？',
+  updateStopTasks: '停止任務並更新',
+  updateTasksChanged: '有新任務開始運行，請重新確認是否停止任務並更新。',
+  updateTasksUnavailable: '無法確認任務狀態，請在工作區就緒後重試更新。',
+  updateFullscreenTimeout: '無法退出全屏，請退出全屏後重試更新',
+  updateStopFailed: '未能安全停止任務，更新尚未安裝，請稍後重試。',
+  updateTechnicalDetails: '查看技術詳情',
+  updateTitle: 'DeepSeek Harness 更新',
+  updateAvailable: '發現新版本 {version}',
+  updateDetail: '下載完成後，可安裝並重啟應用。',
+  installAndRestart: '安裝並重啟',
+  later: '稍後',
+  updateFailedTitle: '更新失敗',
+  mandatoryTitle: '請更新後繼續使用',
+  mandatoryDetail: '當前版本已停止支持，請更新後繼續使用。確認安裝並重啟前，進行中的任務會繼續運行。',
+  mandatoryUnavailable: '暫時無法檢查更新要求，請稍後重試。',
+  policyLoginTitle: '登錄測試環境',
+  policyLoginRequired: '此測試版需要先通過飛書登錄，才能檢查更新要求。登錄不會下載或安裝更新。',
+  policyLogin: '通過飛書登錄',
+  policyLoginFailed: '飛書登錄未完成，請重試。',
+  policyLoginLoading: '正在加載登錄頁面…',
+  mandatoryNoRelease: '暫未找到適用的更新，請重新檢查或聯繫支持人員。',
+  mandatoryRefresh: '重新檢查',
+  mandatoryPage: '前往官網下載',
+  mandatoryCopy: '複製下載鏈接',
+  mandatoryPageFailed: '無法打開官網下載頁面，請複製鏈接後在瀏覽器中打開。',
+  mandatoryViewDownload: '打開下載頁面',
+  mandatoryViewPageFailed: '無法打開下載頁面，請重試',
+  mandatoryActionFailed: '操作失敗，請重試。完成更新後才能繼續使用應用。',
+  mandatoryReady: '更新已準備就緒',
+  mandatoryVersion: '新版本：{version}',
+  mandatoryReadyDetail: '更新期間應用將暫時關閉，完成後會自動打開。',
+  mandatoryDeferred: '進行中的任務會繼續運行。請完成更新後再操作應用。',
+  mandatoryContinue: '繼續更新',
+  mandatoryInspecting: '正在檢查任務狀態…',
+  mandatoryStopping: '正在停止任務…',
+  mandatoryRestarting: '應用即將重啟，請稍候。',
+  mandatoryDownloadFailed: '更新文件下載或準備失敗，請重試。',
+  mandatoryInstallFailed: '更新尚未安裝，請重新檢查任務後重試。',
+  mandatoryOpenHelp: '頁面未打開？',
+  mandatoryReopen: '重新前往官網下載',
+  mandatoryCopied: '鏈接已複製',
+  mandatoryCopyFailed: '複製失敗，請手動選擇並複製下方鏈接。',
+  mandatoryAddress: '下載鏈接',
+  mandatoryNotification: '返回應用確認安裝並重啟。',
+} as const satisfies DesktopMessages
+
 /** Japanese copy, checked against the English keys. */
 export const ja = {
   cliCommandMenu: 'dsh コマンドを管理…',
@@ -1529,22 +1720,34 @@ export const pt = {
   mandatoryNotification: 'Retorne ao aplicativo para confirmar a instalação e reinicie.',
 } satisfies DesktopMessages
 
-const dictionaries = { en, zh, ja, es, fr, de, ru, pt }
+const dictionaries = { en, zh, 'zh-Hant': zhHant, ja, es, fr, de, ru, pt }
 
 /** Locale payload exposed to the Desktop-owned renderer. */
 export interface DesktopLocale {
-  readonly id: 'en' | 'zh-CN' | 'ja' | 'es' | 'fr' | 'de' | 'ru' | 'pt'
+  readonly id: 'en' | 'zh-CN' | 'zh-Hant' | 'ja' | 'es' | 'fr' | 'de' | 'ru' | 'pt'
   readonly messages: DesktopMessages
 }
 
 /** Resolve Electron's locale to one shipped Desktop dictionary. */
-export function resolveDesktopLocale(locale: string): DesktopLocale {
-  const primary = locale.toLowerCase().split('-')[0]
-  if (primary !== undefined && Object.hasOwn(dictionaries, primary)) {
-    const id = primary as keyof typeof dictionaries
-    return { id: id === 'zh' ? 'zh-CN' : id, messages: dictionaries[id] }
+function findDesktopLocale(locale: string): DesktopLocale | undefined {
+  const lower = locale.toLowerCase()
+  // Chinese tags name their script through subtags; the bare `zh` primary
+  // would send every Chinese system to the Simplified shell.
+  if (lower === 'zh' || lower.startsWith('zh-')) {
+    if (lower === 'zh-hant' || lower.startsWith('zh-hant-') || /-(tw|hk|mo)(?:-|$)/u.test(lower)) return { id: 'zh-Hant', messages: zhHant }
+    return { id: 'zh-CN', messages: zh }
   }
-  return { id: 'en', messages: en }
+  const primary = lower.split('-')[0]
+  if (primary !== undefined && Object.hasOwn(dictionaries, primary)) {
+    const id = primary as Exclude<keyof typeof dictionaries, 'zh-Hant'>
+    return { id: id as DesktopLocale['id'], messages: dictionaries[id] }
+  }
+  return undefined
+}
+
+/** Resolve Electron's locale to one shipped Desktop dictionary. */
+export function resolveDesktopLocale(locale: string): DesktopLocale {
+  return findDesktopLocale(locale) ?? { id: 'en', messages: en }
 }
 
 /**
@@ -1554,13 +1757,13 @@ export function resolveDesktopLocale(locale: string): DesktopLocale {
  * @returns the supported dictionary, falling back to English.
  */
 export function resolveDesktopStartupLocale(preference: string | null, languages: readonly string[]): DesktopLocale {
-  const selected = preference?.toLowerCase()
-  if (selected !== undefined && Object.hasOwn(dictionaries, selected)) return resolveDesktopLocale(selected)
+  const selected = preference === null ? undefined : findDesktopLocale(preference)
+  if (selected !== undefined) return selected
   for (const language of languages) {
-    const primary = language.toLowerCase().split('-')[0]
-    if (primary !== undefined && Object.hasOwn(dictionaries, primary)) return resolveDesktopLocale(primary)
+    const resolved = findDesktopLocale(language)
+    if (resolved !== undefined) return resolved
   }
-  return resolveDesktopLocale('en')
+  return { id: 'en', messages: en }
 }
 
 /** Replace named placeholders in one locale-owned message. */

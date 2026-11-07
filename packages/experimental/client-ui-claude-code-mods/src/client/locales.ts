@@ -11,6 +11,14 @@ export const zh = {
   'press.stale': '该按钮属于更早的绘制，面板已刷新',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'band': 'Claude Code 模塊',
+  'pressing': '正在處理…',
+  'press.failed': '按鈕操作失敗：{message}',
+  'press.stale': '該按鈕屬於更早的繪製，面板已刷新',
+} satisfies Record<ModsBandKey, string>
+
 /** Mods band locale key union. */
 export type ModsBandKey = keyof typeof zh
 

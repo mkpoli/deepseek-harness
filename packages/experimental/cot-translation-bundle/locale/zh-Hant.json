@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "思考過程機器翻譯",
+    "description": "智能體輸出時，把展開的“思考”行翻譯成你選擇的語言，點擊“查看原文”可切換回原文。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

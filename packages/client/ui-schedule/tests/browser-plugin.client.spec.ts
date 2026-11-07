@@ -426,8 +426,10 @@ describe('ui-schedule browser half', () => {
       expect(chip.taskBindings).toBe(body.taskBindings)
       expect(chip.hooks.catalog).toBe(body.hooks.catalog)
       const panel = injectedFace(ctx.slots.entries('main')[0]!, undefined as never) as TaskManagerInjected
-      expect(Object.keys(managerLocales).sort()).toEqual(['de', 'en', 'es', 'fr', 'ja', 'pt', 'ru', 'zh'])
-      for (const [language, dictionary] of Object.entries(managerLocales)) {
+      const managerDictionaries = Object.entries(managerLocales)
+        .map(([name, dictionary]) => [name === 'zhHant' ? 'zh-Hant' : name, dictionary] as const)
+      expect(managerDictionaries.map(([language]) => language).sort()).toEqual(['de', 'en', 'es', 'fr', 'ja', 'pt', 'ru', 'zh', 'zh-Hant'])
+      for (const [language, dictionary] of managerDictionaries) {
         expect(dictionary['host.createPrompt']).not.toContain('\n')
         ctx.locale.setLocale(language)
         panel.onNewTask()
@@ -435,7 +437,7 @@ describe('ui-schedule browser half', () => {
           prompt: dictionary['host.createPrompt'], whenDraftExists: 'append',
         })
       }
-      expect(startSession).toHaveBeenCalledTimes(8)
+      expect(startSession).toHaveBeenCalledTimes(9)
     } finally {
       await fiber.dispose()
       owner()

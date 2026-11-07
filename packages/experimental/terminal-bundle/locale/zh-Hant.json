@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "持久終端",
+    "description": "爲智能體提供終端，進程在多次工具調用之間持續在後臺運行，因此它可以啟動開發服務器或 REPL，稍後再讀取輸出或繼續輸入。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

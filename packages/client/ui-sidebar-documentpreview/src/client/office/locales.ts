@@ -17,6 +17,25 @@ export const zh = {
   changed: '文件在读取时已更改，请重新打开预览。',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'title': 'Office 文檔',
+  'loading': '文檔渲染中...',
+  'retry': '重試',
+  'viewMissingFonts': '缺失 {count} 種字體，點擊查看',
+  'missingFontsTitle': '缺失的字體',
+  'missingFontsDescription': '本次預覽無法使用以下字體，預覽中的文字和排版可能與原文檔不同。',
+  'missingFontsCount': '{count} 種字體',
+  'closeDetails': '關閉字體詳情',
+  'unavailable': 'Office 預覽不可用。請在運行 DeepSeek Harness 的主機上啟用文檔預覽服務。',
+  'invalid': '無法預覽此 Office 文件。文件可能已損壞、受密碼保護，或與擴展名不符。',
+  'tooLarge': 'Office 文件或轉換後的 PDF 超過預覽大小上限，請縮小文件或調整預覽配置。',
+  'failed': 'Office 轉換失敗，未生成可用的 PDF。請檢查該文件後重試。',
+  'timeout': 'Office 轉換超時，請重試。',
+  'busy': 'Office 預覽任務較多，請稍後重試。',
+  'changed': '文件在讀取時已更改，請重新打開預覽。',
+} satisfies Record<OfficePreviewKey, string>
+
 /** Office preview locale keys. */
 export type OfficePreviewKey = keyof typeof zh
 

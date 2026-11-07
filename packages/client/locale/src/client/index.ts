@@ -17,13 +17,13 @@ import { parseLocaleBootstrap, type LocaleBootstrap, type LocaleBridge } from '.
 // Type-only: pulls the SlotRegistry service merge (ctx.slots).
 import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import {
-  LOCALE_ID_PATTERN, LOCALE_IDS, LOCALE_PREFERENCE_FIELD, LOCALE_SETTINGS_NAMESPACE,
+  LOCALE_ID_PATTERN, LOCALE_PREFERENCE_FIELD, LOCALE_SETTINGS_NAMESPACE,
   type BuiltInLocaleId, type LocaleId, type LocaleSettings,
 } from '../locale-settings.ts'
-import { en, ja, es, fr, de, ru, pt, zh, type CommonKey } from '../locales/index.ts'
+import { en, ja, es, fr, de, ru, pt, zh, zhHant, type CommonKey } from '../locales/index.ts'
 import {
   en as settingsEn, ja as settingsJa, es as settingsEs, fr as settingsFr,
-  de as settingsDe, ru as settingsRu, pt as settingsPt, zh as settingsZh, type SettingsLocaleKey,
+  de as settingsDe, ru as settingsRu, pt as settingsPt, zh as settingsZh, zhHant as settingsZhHant, type SettingsLocaleKey,
 } from '../locales/settings.ts'
 import type { LanguageRowInjected } from './LanguageRow.tsx'
 import { LanguageRow } from './LanguageRow.tsx'
@@ -115,14 +115,12 @@ export const COMMON_NS = 'common'
 /** Namespace owning this feature's settings-row copy. */
 export const SETTINGS_NS = 'settings.locale'
 
-/** The baseline locales required by typed dictionary registrations. */
-const BUILT_IN_LOCALE_METADATA = {
-  zh: { label: '中文', fallback: 'en' },
-  en: { label: 'English' },
-} as const satisfies Record<BuiltInLocaleId, Omit<LocaleDefinition, 'id'>>
-const BUILT_IN_LOCALES: readonly LocaleDefinition[] = Object.freeze(
-  LOCALE_IDS.map(id => Object.freeze({ id, ...BUILT_IN_LOCALE_METADATA[id] })),
-)
+/** Locales present before any language pack loads, in selector order. */
+const BUILT_IN_LOCALES: readonly LocaleDefinition[] = Object.freeze([
+  Object.freeze({ id: 'zh', label: '中文', fallback: 'en' }),
+  Object.freeze({ id: 'zh-Hant', label: '繁體中文', fallback: 'zh' }),
+  Object.freeze({ id: 'en', label: 'English' }),
+])
 
 /** Case-insensitive key for BCP 47-style ids. */
 function localeKey(value: string): string {
@@ -526,8 +524,9 @@ function resolveInitialLocale(locales: readonly LocaleDefinition[], languages?: 
 
 /**
  * The first registered locale the browser asks for. Each browser tag first
- * matches a locale id exactly, then its primary subtag, so an exact regional
- * registration wins before a language-wide fallback.
+ * matches a locale id exactly, then resolves a Chinese script subtag, then
+ * falls back to its primary subtag, so an exact regional registration wins
+ * before a language-wide match.
  * `window` is the browser test, not `navigator`: Node exposes a global
  * `navigator` reporting the machine's own language, which must not decide the
  * locale for non-browser runs. `navigator.language` trails the ordered
@@ -548,6 +547,14 @@ function detectBrowserLocale(locales: readonly LocaleDefinition[], languages?: r
     const exact = locales.find(locale => localeKey(locale.id) === requested)
     if (exact !== undefined) return exact.id
     const primary = requested.split('-')[0]
+    // A Chinese tag names its script through subtags: Hant, TW, HK and MO read
+    // Traditional; Hans, CN and SG read Simplified. Matching the bare primary
+    // subtag would hand every Chinese browser the Simplified catalog.
+    if (primary === 'zh') {
+      const traditional = requested.includes('-hant') || /-(tw|hk|mo)(?:-|$)/u.test(requested)
+      const scripted = locales.find(locale => localeKey(locale.id) === (traditional ? 'zh-hant' : 'zh'))
+      if (scripted !== undefined) return scripted.id
+    }
     const match = locales.find(locale => localeKey(locale.id).split('-')[0] === primary)
     if (match !== undefined) return match.id
   }
@@ -583,8 +590,8 @@ export async function apply(ctx: ClientContext): Promise<void> {
   for (const [id, label] of [['ja', '日本語'], ['es', 'Español'], ['fr', 'Français'], ['de', 'Deutsch'], ['ru', 'Русский'], ['pt', 'Português']] as const) {
     ctx.effect(() => locale.addLanguage({ id, label, fallback: 'en' }), `locale: ${id} language`)
   }
-  ctx.effect(() => locale.register(COMMON_NS, { zh, en, ja, es, fr, de, ru, pt }), 'locale: common dictionaries')
-  ctx.effect(() => locale.register(SETTINGS_NS, { zh: settingsZh, en: settingsEn, ja: settingsJa, es: settingsEs, fr: settingsFr, de: settingsDe, ru: settingsRu, pt: settingsPt }), 'locale: settings dictionaries')
+  ctx.effect(() => locale.register(COMMON_NS, { zh, 'zh-Hant': zhHant, en, ja, es, fr, de, ru, pt }), 'locale: common dictionaries')
+  ctx.effect(() => locale.register(SETTINGS_NS, { zh: settingsZh, 'zh-Hant': settingsZhHant, en: settingsEn, ja: settingsJa, es: settingsEs, fr: settingsFr, de: settingsDe, ru: settingsRu, pt: settingsPt }), 'locale: settings dictionaries')
   ctx.provide('locale', locale)
   if (bridge !== undefined) {
     ctx.on('locale/change', (snapshot) => { bridge.onChange(snapshot.active) })

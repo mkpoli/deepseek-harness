@@ -35,6 +35,33 @@ export const zh = {
   'empty.efforts': '当前模型未提供推理等级。',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'provider.account': 'DeepSeek 賬號',
+  'command.label': '模型',
+  'command.description': '選擇本會話使用的模型',
+  'option.loadError': '目錄加載失敗：{message}',
+  'trigger.fallback': '請選擇模型',
+  'trigger.loading': '正在加載模型…',
+  'trigger.selectAria': '請選擇模型',
+  'trigger.aria': '選擇模型，當前 {model}',
+  'trigger.ariaEffort': '選擇模型，當前 {model}，推理等級 {effort}',
+  'menu.aria': '模型與推理等級',
+  'menu.model': '模型',
+  'menu.effort': '推理等級',
+  'effort.providerDefault': 'Default',
+  'status.loading': '正在刷新模型列表…',
+  'error.action': '模型操作失敗：{message}',
+  'error.sessionInUse': '當前會話已被佔用，可能是其他正在運行的 DSH 導致的（如其他 dsh web、桌面端），請退出其他正在運行的 DSH 後重試。',
+  'action.reload': '重新加載',
+  'warning.groupLoad': '{name} 加載失敗：{message}',
+  'search.placeholder': '搜索模型…',
+  'search.clear': '清除搜索',
+  'search.empty': '沒有匹配的模型。',
+  'empty.models': '暫無可用模型',
+  'empty.efforts': '當前模型未提供推理等級。',
+} satisfies Record<ModelKey, string>
+
 /** The model namespace key union. */
 export type ModelKey = keyof typeof zh
 

@@ -20,6 +20,17 @@ export const zh: Record<keyof typeof en, string> = {
   'createPrompt.rightbar': '创建一个带右侧栏入口的 DSH 插件。',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'pinTooltip': '固定到左側欄',
+  'pin': '將{name}固定到側邊欄',
+  'install': '瀏覽更多插件',
+  'create': '創建你的插件',
+  'createPrompt.sidebar': '創建一個帶左側欄入口的 DSH 插件。',
+  'createPrompt.conversation': '創建一個 DSH 會話視圖插件。',
+  'createPrompt.rightbar': '創建一個帶右側欄入口的 DSH 插件。',
+} as const
+
 /** Japanese copy, checked against the English keys. */
 export const ja = {
   'pinTooltip': '左サイドバーに固定',

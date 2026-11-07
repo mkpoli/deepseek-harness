@@ -6,6 +6,14 @@ export const zh = {
   failed: '无法预览这份 HTML 文档',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'title': 'HTML',
+  'frame': 'HTML 文檔預覽',
+  'loading': '文檔渲染中...',
+  'failed': '無法預覽這份 HTML 文檔',
+} satisfies Record<HtmlPreviewKey, string>
+
 /** HTML renderer dictionary keys. */
 export type HtmlPreviewKey = keyof typeof zh
 

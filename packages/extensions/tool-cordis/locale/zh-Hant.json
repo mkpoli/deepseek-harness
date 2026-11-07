@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "插件 API 查詢工具",
+    "description": "讓 AI 在開發插件前查詢服務端和瀏覽器端的可用 API。"
+  }
+}

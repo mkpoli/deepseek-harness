@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "SSH 連接",
+    "description": "共享 OpenSSH 連接和帶版本的 POSIX 遠程輔助程序。"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "ACP 子智能體後端",
+    "description": "在子進程中通過 ACP 協議驅動外部智能體。"
+  }
+}

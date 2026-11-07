@@ -3,6 +3,7 @@
  * every shipped language is checked against them by TypeScript.
  */
 export { zh } from './zh.ts'
+export { zhHant } from './zh-hant.ts'
 export { en } from './en.ts'
 export { ja } from './ja.ts'
 export type { CommonKey } from './zh.ts'

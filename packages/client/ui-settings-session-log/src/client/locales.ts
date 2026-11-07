@@ -14,6 +14,14 @@ export const zh: Record<keyof typeof en, string> = {
   failed: '无法保存设置',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<keyof typeof en, string> = {
+  'title': '在使用官方模型 API 時上傳 Session Log',
+  'description': '幫助改進 DeepSeek 模型與產品',
+  'saved': '設置已保存',
+  'failed': '無法保存設置',
+}
+
 /** Japanese copy, checked against the English keys. */
 export const ja = {
   'title': '公式モデル API 使用時にセッションログをアップロード',

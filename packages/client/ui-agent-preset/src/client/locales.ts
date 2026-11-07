@@ -1,6 +1,6 @@
 /** Locale bundles for the agent-preset hero chip, header label, and management section. */
 
-import { guideEn, guideJa, guideEs, guideFr, guideDe, guideRu, guidePt, guideZh, type PresetGuideKey } from './guide-locales.ts'
+import { guideEn, guideJa, guideEs, guideFr, guideDe, guideRu, guidePt, guideZh, guideZhHant, type PresetGuideKey } from './guide-locales.ts'
 
 /** Locale keys these surfaces render. */
 export type AgentPresetSettingsKey =
@@ -118,6 +118,39 @@ export const zh: Record<AgentPresetSettingsKey, string> = {
   createPluginUnavailable: '暂时不可用，请重新打开菜单重试',
   createPluginMissing: '当前配置未提供创造模式',
 
+}
+
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<AgentPresetSettingsKey, string> = {
+  ...guideZhHant,
+  'builtInGroup': '內置',
+  'customGroup': '自定義',
+  'sectionIntro': '選擇 Agent 的工具和工作方式。日常任務用「標準模式」，擴展 DSH 的能力用「創造模式」。',
+  'seatHint': '選擇新任務使用的 Agent 預設',
+  'headerHint': '本任務的 Agent 預設，在任務開始時確定',
+  'nav': 'Agent 預設',
+  'setDefault': '設爲新任務默認',
+  'view': '查看配置',
+  'presetStandardName': '標準模式',
+  'presetStandardDescription': '處理代碼、文件和資料，適合大多數任務。Agent 會按需使用檢索、編輯和終端等工具。',
+  'presetPtcName': 'PTC 模式',
+  'presetPtcDescription': '包含標準模式的所有能力，更適合批量調用工具，並對結果進行篩選、整理、去重、統計或彙總的任務。',
+  'presetMinimalName': '極簡模式',
+  'presetMinimalDescription': 'Agent 使用終端和圖片讀取工具，並支持上下文壓縮，適合測試和對比其基礎表現。',
+  'presetCordisName': '創造模式',
+  'presetCordisDescription': '用對話定製 DSH：讓 Agent 編寫插件，添加新功能或界面；也能組合工具和提示詞，創建自己的模式。',
+  'inUse': '新任務默認',
+  'noDescription': '暫無描述。',
+  'brokenBadge': '加載失敗',
+  'switchRefused': '無法切換到「{name}」：{reason}',
+  'standardUnavailable': '標準模式不可用，請恢復該模式或選擇其他可用模式。',
+  'close': '關閉',
+  'creatorDraft': '讓 Agent 幫我創建預設模式',
+  'createPlugin': '讓 Agent 創建插件',
+  'createPluginDescription': '進入創造模式，製作屬於你的 DSH 插件',
+  'createPluginChecking': '正在確認創造模式是否可用',
+  'createPluginUnavailable': '暫時不可用，請重新打開菜單重試',
+  'createPluginMissing': '當前配置未提供創造模式',
 }
 
 // The resolution itself is the shared fold in `dsh-agent-preset-registry/display`,

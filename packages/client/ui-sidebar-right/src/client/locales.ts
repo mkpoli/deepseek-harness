@@ -48,6 +48,48 @@ export const zh = {
   'tab.unavailable': '这类内容还没有可用的查看方式。',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'menu.close': '關閉',
+  'menu.closeOthers': '關閉其他標籤頁',
+  'menu.closeRight': '關閉右側標籤頁',
+  'command.close': '關閉當前頁面／窗口',
+  'command.refresh': '刷新當前頁面',
+  'command.noRefresh': '當前頁面不支持刷新',
+  'command.toggle': '展開／收起右側欄',
+  'command.fullscreen': '面板全屏／退出全屏',
+  'command.noSession': '請先選擇會話',
+  'command.noFocus': '請先聚焦右側面板',
+  'command.stale': '頁面已切換，請重新聚焦',
+  'command.collapsed': '請先展開右側欄',
+  'command.float': '浮動面板不支持此操作',
+  'command.empty': '請先打開頁面',
+  'command.budget': '已達兩格上限',
+  'command.width': '欄寬不足，拖寬側邊欄後再分欄',
+  'chrome.expand': '打開側邊欄',
+  'chrome.expandAria': '打開右側邊欄',
+  'chrome.collapse': '收起側邊欄',
+  'chrome.collapseAria': '收起右側邊欄',
+  'chrome.toFullscreen': '全屏',
+  'chrome.exitFullscreen': '退出全屏',
+  'dock.emptyPane': '空面板',
+  'dock.splitPane': '分欄',
+  'dock.splitPaneDisabled': '已達兩格上限',
+  'dock.splitPaneNarrow': '欄寬不足，拖寬側邊欄後再分欄',
+  'dock.closeTab': '關閉',
+  'dock.addTab': '新標籤頁',
+  'dock.dockFloat': '收回到側邊欄',
+  'dock.closeFloat': '關閉',
+  'dock.drop.center': '移到這裏',
+  'dock.drop.left': '左分欄',
+  'dock.drop.right': '右分欄',
+  'dock.drop.top': '上分欄',
+  'dock.drop.bottom': '下分欄',
+  'tab.guide.title': '開始',
+  'tab.guide.more': '更多工具',
+  'tab.unavailable': '這類內容還沒有可用的查看方式。',
+} satisfies Record<SidebarRightKey, string>
+
 /** Right-Sidebar dictionary key union. */
 export type SidebarRightKey = keyof typeof zh
 

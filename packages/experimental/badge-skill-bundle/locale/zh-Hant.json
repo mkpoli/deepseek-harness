@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "DSH 徽章技能",
+    "description": "讓 Agent 爲文檔、PR 等產出添加「powered by dsh」徽章。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

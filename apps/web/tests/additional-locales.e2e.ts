@@ -13,6 +13,7 @@ const languages = [
   ['de', 'de-DE', 'Kontomenü', 'Einstellungen', 'Plugins', 'Sprache', 'Deutsch'],
   ['ru', 'ru-RU', 'Меню аккаунта', 'Настройки', 'Плагины', 'Язык', 'Русский'],
   ['pt', 'pt-BR', 'Menu da conta', 'Configurações', 'Plug-ins', 'Idioma', 'Português'],
+  ['zh-Hant', 'zh-TW', '賬號菜單', '設置', '插件', '語言', '繁體中文'],
 ] as const
 
 it.each(languages)('selects %s from the browser, localizes metadata and persists an explicit choice', async (id, tag, accountMenu, settings, plugins, language, label) => {

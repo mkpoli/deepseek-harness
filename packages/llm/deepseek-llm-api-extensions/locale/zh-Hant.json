@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "DeepSeek API 擴展",
+    "description": "允許其他插件向 DeepSeek 模型請求添加擴展字段。"
+  }
+}

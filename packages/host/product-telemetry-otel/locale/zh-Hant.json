@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "產品使用事件上報",
+    "description": "通過 OpenTelemetry 向配置的服務上報指定產品使用事件。"
+  }
+}

@@ -15,6 +15,13 @@ export const zh = {
   copied: '已复制',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'title': '代碼',
+  'copy': '複製',
+  'copied': '已複製',
+} satisfies Record<keyof typeof zh, string>
+
 /** English dictionary with the same keys. */
 export const en = {
   title: 'Code',

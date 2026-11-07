@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "公開網頁獲取",
+    "description": "讀取無需登錄的 HTTP 或 HTTPS 網頁內容。"
+  }
+}

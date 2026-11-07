@@ -8,6 +8,11 @@ export const zh = {
   'quote.add': '引用文本',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<MessageQuotesKey, string> = {
+  'quote.add': '引用文本',
+}
+
 /** Supported Quote interaction copy keys. */
 export type MessageQuotesKey = keyof typeof zh
 

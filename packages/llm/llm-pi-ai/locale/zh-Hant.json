@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "pi-ai 模型適配",
+    "description": "通過 pi-ai 爲 DeepSeek Harness 提供 DeepSeek 模型適配，作爲 dsh-llm-deepseek 的設計驗證實現。"
+  }
+}

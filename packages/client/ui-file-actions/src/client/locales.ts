@@ -16,6 +16,22 @@ export const zh = {
   'path.revealError': '无法显示文件位置，请重试',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'menu.finder': '在 Finder 顯示',
+  'menu.reveal': '在文件夾顯示',
+  'menu.saveAs': '另存爲…',
+  'menu.copied': '已複製',
+  'menu.copyImage': '複製圖片',
+  'menu.download': '下載',
+  'menu.saveFailed': '無法保存文件，請檢查源文件和目標位置後重試',
+  'menu.copyFailed': '無法複製，請檢查內容是否可用後重試',
+  'menu.saved': '已保存',
+  'menu.downloadStarted': '已開始下載',
+  'menu.downloaded': '下載完成',
+  'path.revealError': '無法顯示文件位置，請重試',
+} satisfies Record<FileActionKey, string>
+
 /** File-action dictionary keys. */
 export type FileActionKey = keyof typeof zh
 

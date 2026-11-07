@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "SDK 服務",
+    "description": "通過標準輸入輸出 JSON-RPC 爲獨立進程中的 SDK 客戶端提供服務。"
+  }
+}

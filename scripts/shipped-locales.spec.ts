@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs'
 import * as desktop from '../apps/desktop/src/locale.ts'
-import { readInstallerLocales } from '../apps/desktop/scripts/installer-locales.mjs'
+import { INSTALLER_LOCALE_IDS, readInstallerLocales } from '../apps/desktop/scripts/installer-locales.mjs'
 /** Translations preserve executable command examples and named interpolation fields. */
 import { expect, it } from 'vitest'
-import { SHIPPED_LOCALE_IDS, localeTokens, hasInvisibleLocaleCharacters } from './shipped-locales.ts'
+import { SHIPPED_LOCALE_IDS, shippedLocaleExportName, localeTokens, hasInvisibleLocaleCharacters } from './shipped-locales.ts'
 
 it('retains repeated placeholders, commands, and API identifiers', () => {
   expect(localeTokens('Use /plan off, /compact and /THEME=dark with {count}, {count} and reasoning_effort.'))
@@ -30,13 +30,15 @@ it.each(['\u200b', '\ufeff'])('rejects an invisible translation character', (cha
 })
 
 it('matches Desktop dictionaries, resolution and installer resources to the shipped catalog', () => {
-  const dictionaries = Object.keys(desktop).filter(name => /^[a-z]{2}$/u.test(name)).sort()
-  expect(dictionaries).toEqual([...SHIPPED_LOCALE_IDS].sort())
+  const names = SHIPPED_LOCALE_IDS.map(shippedLocaleExportName).sort()
+  expect(Object.keys(desktop).filter(name => names.includes(name)).sort()).toEqual(names)
   for (const id of SHIPPED_LOCALE_IDS) {
-    expect(desktop.resolveDesktopLocale(id).id).toBe(id === 'zh' ? 'zh-CN' : id)
-    expect(desktop.resolveDesktopStartupLocale(null, [id]).id).toBe(id === 'zh' ? 'zh-CN' : id)
+    const desktopId = id === 'zh' ? 'zh-CN' : id
+    expect(desktop.resolveDesktopLocale(id).id).toBe(desktopId)
+    expect(desktop.resolveDesktopStartupLocale(null, [id]).id).toBe(desktopId)
   }
-  expect(readInstallerLocales().map(locale => locale.id.split('_')[0]).sort()).toEqual(dictionaries)
+  expect(INSTALLER_LOCALE_IDS).toHaveLength(SHIPPED_LOCALE_IDS.length)
+  expect(readInstallerLocales().map(locale => locale.id).sort()).toEqual([...INSTALLER_LOCALE_IDS].sort())
 })
 
 it('rejects invisible characters in the Desktop locale source', () => {

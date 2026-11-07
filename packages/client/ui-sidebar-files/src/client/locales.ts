@@ -43,6 +43,31 @@ export const zh = {
   'error.unavailable': '读取失败：{message}',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'shortcut.noSession': '請先選擇會話',
+  'type.label': '文件',
+  'guide.title': '工作區文件',
+  'guide.description': '瀏覽會話工作區的文件',
+  'loading': '正在讀取…',
+  'empty': '空目錄',
+  'truncated': '條目太多，只顯示了一部分。',
+  'noWorkspace': '這個會話沒有工作區目錄。',
+  'reload': '重新讀取',
+  'autoRefresh': '自動刷新',
+  'autoRefresh.enable': '開啟自動刷新',
+  'autoRefresh.disable': '關閉自動刷新',
+  'entry.other': '這不是文件或目錄，沒法打開。',
+  'entry.noViewer': '沒有可以打開此文件的查看器。',
+  'navigator.show': '顯示文件樹',
+  'navigator.hide': '隱藏文件樹',
+  'navigator.resize': '調整文件樹寬度',
+  'error.notFound': '這個目錄不在了。可能已被移動或刪除。',
+  'error.outsideWorkspace': '這個目錄在工作區之外，側欄不會讀取它。',
+  'error.notDirectory': '這不是一個目錄。',
+  'error.unavailable': '讀取失敗：{message}',
+} satisfies Record<SidebarFilesKey, string>
+
 /** Files dictionary key union. */
 export type SidebarFilesKey = keyof typeof zh
 

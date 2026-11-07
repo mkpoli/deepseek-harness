@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Git 工作樹",
+    "description": "要求在新分支上工作時，智能體會創建單獨的 Git 工作樹並在其中繼續，你當前的工作樹保持原樣。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

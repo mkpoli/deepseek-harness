@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Harness 開發上下文",
+    "description": "向模型提供 Harness 源碼目錄與 Web 地址，不因此改變系統提示詞。"
+  }
+}

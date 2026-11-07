@@ -1,5 +1,5 @@
 /** Account settings copy, owned by the account feature. */
-import { onboardingZh, onboardingEn, onboardingJa, onboardingEs, onboardingFr, onboardingDe, onboardingRu, onboardingPt } from './locales/onboarding.ts'
+import { onboardingZh, onboardingZhHant, onboardingEn, onboardingJa, onboardingEs, onboardingFr, onboardingDe, onboardingRu, onboardingPt } from './locales/onboarding.ts'
 
 /** English account dictionary. */
 export const en = {
@@ -71,6 +71,66 @@ export const zh: Record<AccountKey, string> = {
   quotaTopUp: '去充值',
   bonusNoticeTitle: '赠金已到账',
 }
+
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  ...onboardingZhHant,
+  'modelSignInRequired': '當前模型暫不可用，請登錄後再試',
+  'sessionExpired': '登錄信息已失效，請重新登錄',
+  'close': '關閉',
+  'addApiKey': '添加 API Key',
+  'retry': '重新登錄',
+  'loginTitle': '開始使用',
+  'loginDescription': '登錄 DeepSeek 賬號，或添加 API Key，即可開始使用。你的項目和文件保存在本地。',
+  'browserTitle': '等待登錄',
+  'browserPrompt': '沒有自動打開新頁面？',
+  'copyLink': '複製登錄鏈接',
+  'copiedLink': '鏈接已複製',
+  'copyFailed': '複製失敗',
+  'browserDescription': '，手動打開登錄頁完成登錄。',
+  'timeoutTitle': '登錄已超時',
+  'timeoutDescription': '請重新登錄後繼續操作。',
+  'failureTitle': '登錄失敗',
+  'platformFailed': '操作未完成，請重試',
+  'platformRetry': '重試',
+  'loading': '加載中…',
+  'backToHarness': '返回 DeepSeek Harness',
+  'settings': '設置',
+  'contactUs': '意見反饋',
+  'menu': '賬號菜單',
+  'nav': '賬號與餘額',
+  'signedIn': '已登錄 DeepSeek',
+  'signedOut': '尚未登錄',
+  'signIn': '登錄',
+  'signOut': '退出登錄',
+  'signOutUnknownDescription': '暫時無法確認任務狀態。退出登錄可能會中斷使用此賬號的任務，是否繼續？',
+  'signOutDescription': '退出登錄不會丟失任何數據，你仍可以登錄此賬號。',
+  'signOutRunningDescription': '當前有進程正在執行中，點擊“退出登錄”，將會打斷進程，是否即刻退出登錄？',
+  'cancel': '取消',
+  'open': '打開瀏覽器',
+  'initializing': '正在發起登錄…',
+  'waiting': '請在瀏覽器中繼續',
+  'completing': '正在完成登錄…',
+  'expired': '登錄已過期，請重試。',
+  'failed': '操作未完成，請重試。',
+  'noResponse': '操作未完成，可能是網絡異常，請檢查你的網絡狀況後重試',
+  'settingsSignedOutTitle': '當前未登錄 DeepSeek Harness 賬號',
+  'settingsSignedOutDescription': '登錄 DeepSeek Harness 賬號獲取專屬 API Key',
+  'signInDescription': '登錄 DeepSeek 賬號以開始使用',
+  'profileUnavailable': '賬號資料暫不可用',
+  'balance': '充值餘額',
+  'bonusBalance': '贈金餘額',
+  'balanceUnavailable': '前往開放平臺查看',
+  'balanceSignedOut': '登錄後查看',
+  'accountInfo': '更多賬號信息',
+  'more': '更多',
+  'usage': '查詢用量',
+  'topUp': '充值',
+  'quotaTitle': '當前無可用餘額',
+  'quotaDescription': '沒有可用額度時，DeepSeek Harness 無法開始新的任務，是否前往充值？或者可以稍後前往 設置 → 賬號與餘額 進行充值。',
+  'quotaTopUp': '去充值',
+  'bonusNoticeTitle': '贈金已到賬',
+} as const
 
 /** Japanese copy, checked against the English keys. */
 export const ja = {

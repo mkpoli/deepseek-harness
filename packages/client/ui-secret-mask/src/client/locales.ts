@@ -11,6 +11,12 @@ export const zh = {
   'secret.hide': '隐藏密钥',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'secret.reveal': '顯示密鑰',
+  'secret.hide': '隱藏密鑰',
+} satisfies Record<SecretMaskKey, string>
+
 /** The secretMask namespace key union. */
 export type SecretMaskKey = keyof typeof zh
 

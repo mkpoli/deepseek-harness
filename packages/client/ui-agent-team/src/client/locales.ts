@@ -37,6 +37,40 @@ export const zh = {
   'status.completed': '已完成',
 } satisfies Record<string, string>
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant = {
+  'progress.completed': '{count} 已完成',
+  'progress.active': '{count} 進行中',
+  'progress.pending': '{count} 待處理',
+  'command.title': '智能體團隊協作',
+  'command.running': '執行中',
+  'command.done': '已完成',
+  'command.failed': '執行失敗',
+  'command.failedReason': '執行失敗：{reason}',
+  'trigger': '任務板',
+  'mode.label': '啟用智能體團隊協作',
+  'mode.infoLabel': '關於智能體團隊協作',
+  'mode.description': '通過共享任務板協調多個智能體的分工與進度，複雜任務表現更佳，token 開銷也相應更高。',
+  'mode.failed': '無法確認智能體團隊協作設置已保存，請重試：{message}',
+  'disable.title': '確認停用智能體團隊協作？',
+  'disable.description': '對話過程中停用智能體團隊協作，將停止共享任務工具和團隊協調指令。',
+  'disable.warning': '停用後可能影響緩存複用、增加後續 token 用量與開銷，並影響當前任務的協作效果。',
+  'disable.cancel': '取消',
+  'disable.confirm': '確認停用',
+  'disable.close': '關閉',
+  'loading': '正在加載任務板…',
+  'unavailable': '任務板暫不可用',
+  'failure': '任務記錄無效：{message}',
+  'empty': '暫無共享任務，可以通過對話創建',
+  'tasks': '共享任務',
+  'owner': '負責人',
+  'unowned': '未分配',
+  'blocked': '被依賴阻塞',
+  'status.pending': '待處理',
+  'status.in_progress': '進行中',
+  'status.completed': '已完成',
+} satisfies Record<TeamKey, string>
+
 /** Agent teamwork locale key union. */
 export type TeamKey = keyof typeof zh
 

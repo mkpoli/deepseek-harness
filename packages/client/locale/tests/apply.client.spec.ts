@@ -184,6 +184,7 @@ describe('locale apply', () => {
     await languagePack.await()
     expect(instance.getSnapshot().options).toEqual([
       { id: 'zh', label: '中文' },
+      { id: 'zh-Hant', label: '繁體中文' },
       { id: 'en', label: 'English' },
       { id: 'ja', label: '日本語' },
       { id: 'es', label: 'Español' },
@@ -195,7 +196,7 @@ describe('locale apply', () => {
     ])
 
     await languagePack.dispose()
-    expect(instance.getSnapshot().options.map(option => option.id)).toEqual(['zh', 'en', 'ja', 'es', 'fr', 'de', 'ru', 'pt'])
+    expect(instance.getSnapshot().options.map(option => option.id)).toEqual(['zh', 'zh-Hant', 'en', 'ja', 'es', 'fr', 'de', 'ru', 'pt'])
   })
 
   it.each([
@@ -221,7 +222,7 @@ describe('locale apply', () => {
     await vi.waitFor(() => { expect(b.mutate).toHaveBeenCalledTimes(2) })
     expect(b.mutate.mock.calls.at(-1)?.[1]).toEqual([{ op: 'set', path: ['preference'], value: id }])
     await fiber.dispose()
-    expect(locale.getSnapshot().locales.map(option => option.id)).toEqual(['zh', 'en'])
+    expect(locale.getSnapshot().locales.map(option => option.id)).toEqual(['zh', 'zh-Hant', 'en'])
     expect(() => { locale.setLocale(id) }).toThrow('not registered')
     const remove = locale.addLanguage({ id, label, fallback: 'en' })
     locale.setLocale(id)

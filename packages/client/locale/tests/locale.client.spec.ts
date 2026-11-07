@@ -216,7 +216,7 @@ describe('LocaleRuntime', () => {
 
     dispose()
     expect(svc.getLocale().active).toBe('zh')
-    expect(svc.getLocale().locales.map(locale => locale.id)).toEqual(['zh', 'en'])
+    expect(svc.getLocale().locales.map(locale => locale.id)).toEqual(['zh', 'zh-Hant', 'en'])
     expect(svc.bind('ns')('hello')).toBe('Hello')
     const revision = svc.getLocale().revision
     dispose()
@@ -292,7 +292,7 @@ describe('LocaleRuntime', () => {
       .toThrow('locale fallback "fr" is not registered')
     expect(() => svc.addLanguage({ id: 'fr', label: 'Français', fallback: 'fr-CA' }))
       .toThrow('fallback cycle')
-    expect(svc.getLocale().locales.map(locale => locale.id)).toEqual(['zh', 'en', 'fr-CA'])
+    expect(svc.getLocale().locales.map(locale => locale.id)).toEqual(['zh', 'zh-Hant', 'en', 'fr-CA'])
   })
 
   it('adopts a saved external locale when its definition registers later', () => {
@@ -341,7 +341,13 @@ describe('LocaleRuntime', () => {
     stubLanguages('en-GB', 'zh-CN')
     expect(make().svc.getLocale().active).toBe('en')
     stubLanguages('zh-Hant-TW')
+    expect(make().svc.getLocale().active).toBe('zh-Hant')
+    stubLanguages('zh-CN')
     expect(make().svc.getLocale().active).toBe('zh')
+    stubLanguages('zh-Hans-SG')
+    expect(make().svc.getLocale().active).toBe('zh')
+    stubLanguages('zh-TW')
+    expect(make().svc.getLocale().active).toBe('zh-Hant')
     // An unshipped language walks the list to the first one this app ships.
     stubLanguages('fr-FR', 'en-US')
     expect(make().svc.getLocale().active).toBe('en')
@@ -407,10 +413,11 @@ describe('LocaleRuntime', () => {
     expect(svc.bind('ns2')('onlyZh')).toBe('onlyZh')
   })
 
-  it('starts with exactly the two shipped locales and their fallback relation', () => {
+  it('starts with the built-in Chinese scripts and their fallback relation', () => {
     const { svc } = make()
     expect(svc.getLocale().locales).toEqual([
       { id: 'zh', label: '中文', fallback: 'en' },
+      { id: 'zh-Hant', label: '繁體中文', fallback: 'zh' },
       { id: 'en', label: 'English' },
     ])
   })

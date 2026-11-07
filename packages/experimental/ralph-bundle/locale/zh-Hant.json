@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Ralph 循環",
+    "description": "要求用 Ralph 循環完成一個目標後，智能體會一輪接一輪地啟動新的智能體處理它，直到目標達成、報告受阻或達到輪次上限。",
+    "detail": "docs/DETAIL.zh-Hant.md"
+  }
+}

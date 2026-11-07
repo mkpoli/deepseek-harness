@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "反饋會話日誌上傳",
+    "description": "按反饋授權策略，通過 OpenTelemetry 上傳相關會話日誌。"
+  }
+}

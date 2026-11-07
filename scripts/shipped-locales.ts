@@ -1,8 +1,13 @@
 /** Languages whose UI dictionaries and package metadata ship with Harness. */
-export const SHIPPED_LOCALE_IDS = ['en', 'zh', 'ja', 'es', 'fr', 'de', 'ru', 'pt'] as const
+export const SHIPPED_LOCALE_IDS = ['en', 'zh', 'zh-Hant', 'ja', 'es', 'fr', 'de', 'ru', 'pt'] as const
 
 /** Locale id required by repository translation checks. */
 export type ShippedLocaleId = typeof SHIPPED_LOCALE_IDS[number]
+
+/** Dictionary export name for a locale tag: `zh-Hant` is exported as `zhHant`. */
+export function shippedLocaleExportName(id: ShippedLocaleId): string {
+  return id.replace(/-([a-z])/giu, (_, letter: string) => letter.toUpperCase())
+}
 
 /**
  * Extract copy tokens that translations must preserve verbatim.

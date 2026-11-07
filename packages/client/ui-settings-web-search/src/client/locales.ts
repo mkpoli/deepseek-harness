@@ -93,6 +93,45 @@ export const zh: Record<WebSearchSettingsLocaleKey, string> = {
   invalidCount: '请填 1–50 的整数；留空表示使用默认值。',
 }
 
+/** Traditional Chinese copy, checked against the Chinese keys. */
+export const zhHant: Record<WebSearchSettingsLocaleKey, string> = {
+  'title': '網頁搜索與獲取',
+  'description': '選擇網頁搜索與網頁獲取使用的提供方。',
+  'searchSection': '網頁搜索提供方',
+  'fetchSection': '網頁獲取提供方',
+  'providerDeepSeek': 'DeepSeek Search API',
+  'providerLegacy': 'DeepSeek（舊版）',
+  'legacyKeyHint': '賬號模型發起的請求使用已登錄賬號；其他請求使用此 API Key（{ref}），默認與「模型」頁共用',
+  'maxUses': '單次請求最多搜索次數',
+  'maxUsesHint': '每次 Messages 請求允許的服務端搜索次數上限，須爲正整數，默認 5',
+  'invalidMaxUses': '請填正整數；留空表示使用默認值',
+  'providerLocal': '本機直接獲取',
+  'providerDeepSeekFetch': 'DeepSeek Fetch API',
+  'providerMissing': '{id}（未加載）',
+  'providerAuto': '自動選擇',
+  'providersFailed': '無法讀取提供方列表，此菜單可能不完整',
+  'retry': '重試',
+  'pluginProviderHint': '請在該插件自己的設置中配置',
+  'credential': 'API Key',
+  'baseUrl': 'Base URL',
+  'baseUrlHint': '填寫含 API 前綴的地址；留空時使用官方地址；程序追加 {path}',
+  'apiKeyUnsetApi': '未配置密鑰。',
+  'searchGuide': '網頁搜索與獲取指南',
+  'searchGuideUrl': 'https://api-docs.deepseek.com/zh-cn/guides/search',
+  'apiKeySet': '已配置密鑰。',
+  'count': '每次搜索結果數',
+  'countHint': '每個查詢返回的結果條數，須爲 1–50 的整數，默認 10；不控制搜索調用次數。web_search 保留的來源數不超過其自身的結果上限。',
+  'overridden': '已覆蓋',
+  'reset': '恢復默認',
+  'readOnly': '本部署的設置爲只讀。',
+  'unavailable': '該插件當前未加載，暫時無法配置。',
+  'save': '保存',
+  'saving': '保存中…',
+  'saveFailed': '本部署沒有接受這些值，已保留供你修改。',
+  'invalidNumber': '請填數字；留空表示使用默認值。',
+  'invalidCount': '請填 1–50 的整數；留空表示使用默認值。',
+}
+
 /**
  * The form frame's copy, read from this page's dictionary.
  * @param t - the page's locale reader.

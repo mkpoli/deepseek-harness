@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "持久 Bash 工具",
+    "description": "讓 AI 在保留狀態的 Bash 會話中連續執行命令。"
+  }
+}
